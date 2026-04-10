@@ -41,9 +41,13 @@ Future<void> mainCommon({
     name: name,
   );
 
-  await Firebase.initializeApp(
-    options: FirebaseOptionsSelector.current,
-  );
+  try {
+    await Firebase.initializeApp(
+      options: FirebaseOptionsSelector.current,
+    );
+  } on FirebaseException catch (e) {
+    if (e.code != 'duplicate-app') rethrow;
+  }
 
   await FirebaseAnalytics.instance.setUserProperty(
     name: 'flavor',
