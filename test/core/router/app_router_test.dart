@@ -1,0 +1,114 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:inkscroller_flutter/core/router/app_router.dart';
+
+class _FakeUser implements User {
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+void main() {
+  group('resolveAuthRedirect', () {
+    // ── Guest on public routes ──────────────────────────────────────────────
+
+    test('P0-F7: guest can access public routes without redirect', () {
+      for (final route in ['/', '/explore', '/library', '/settings']) {
+        expect(
+          resolveAuthRedirect(currentUser: null, matchedLocation: route),
+          isNull,
+          reason: 'Guest should access $route freely',
+        );
+      }
+    });
+
+    test('P0-F7: guest can access manga-detail public route', () {
+      expect(
+        resolveAuthRedirect(
+          currentUser: null,
+          matchedLocation: '/manga/some-id',
+        ),
+        isNull,
+      );
+    });
+
+    // ── Guest on auth-only routes ───────────────────────────────────────────
+
+    test('guest can access /login and /register', () {
+      expect(
+        resolveAuthRedirect(currentUser: null, matchedLocation: '/login'),
+        isNull,
+      );
+      expect(
+        resolveAuthRedirect(currentUser: null, matchedLocation: '/register'),
+        isNull,
+      );
+    });
+
+    // ── Guest on protected routes ───────────────────────────────────────────
+
+    test('P0-F7: guest is redirected to /login when accessing /profile', () {
+      expect(
+        resolveAuthRedirect(currentUser: null, matchedLocation: '/profile'),
+        '/login',
+      );
+    });
+
+    // ── Authenticated user on auth routes ───────────────────────────────────
+
+    test('P0-F7: authenticated user is redirected away from /login', () {
+      final user = _FakeUser();
+      expect(
+        resolveAuthRedirect(currentUser: user, matchedLocation: '/login'),
+        '/',
+      );
+    });
+
+    test('P0-F7: authenticated user is redirected away from /register', () {
+      final user = _FakeUser();
+      expect(
+        resolveAuthRedirect(currentUser: user, matchedLocation: '/register'),
+        '/',
+      );
+    });
+
+    // ── Authenticated user on public and protected routes ───────────────────
+
+    test('authenticated user can access public routes without redirect', () {
+      final user = _FakeUser();
+      for (final route in ['/', '/explore', '/library', '/settings']) {
+        expect(
+          resolveAuthRedirect(currentUser: user, matchedLocation: route),
+          isNull,
+          reason: 'Authenticated user should access $route freely',
+        );
+      }
+    });
+
+    test('P0-F7: authenticated user can access /profile without redirect', () {
+      final user = _FakeUser();
+      expect(
+        resolveAuthRedirect(currentUser: user, matchedLocation: '/profile'),
+        isNull,
+      );
+    });
+
+    // ── Auth error fallback — public routes remain unblocked ────────────────
+
+    test('P0-F7: null user (auth error fallback) does not block public routes', () {
+      // After an auth stream error, AuthNotifier clears the user (null).
+      // The router must not redirect guests away from public content.
+      expect(
+        resolveAuthRedirect(currentUser: null, matchedLocation: '/'),
+        isNull,
+      );
+      expect(
+        resolveAuthRedirect(currentUser: null, matchedLocation: '/explore'),
+        isNull,
+      );
+      expect(
+        resolveAuthRedirect(currentUser: null, matchedLocation: '/library'),
+        isNull,
+      );
+    });
+  });
+}

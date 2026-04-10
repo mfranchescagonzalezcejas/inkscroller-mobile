@@ -1,0 +1,47 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "InkScroller • DEV Emulator",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main_dev.dart",
+      "args": ["--flavor", "dev", "--dart-define=API_BASE_URL=http://10.0.2.2:8000", "--dart-define=API_FALLBACK_URL=http://127.0.0.1:8000"]
+    },
+    {
+      "name": "InkScroller • STAGING Emulator",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main_staging.dart",
+      "args": ["--flavor", "staging", "--dart-define=API_BASE_URL=http://10.0.2.2:8000", "--dart-define=API_FALLBACK_URL=http://127.0.0.1:8000"]
+    },
+    {
+      "name": "InkScroller • PROD Emulator",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main_pro.dart",
+      "args": ["--flavor", "pro", "--dart-define=API_BASE_URL=http://10.0.2.2:8000", "--dart-define=API_FALLBACK_URL=http://127.0.0.1:8000"]
+    },
+    {
+      "name": "InkScroller • DEV Cloud",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main_dev.dart",
+      "args": ["--flavor", "dev", "--dart-define=API_BASE_URL=https://inkscroller-backend-708894048002.us-central1.run.app"]
+    },
+    {
+      "name": "InkScroller • STAGING Cloud",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main_staging.dart",
+      "args": ["--flavor", "staging", "--dart-define=API_BASE_URL=https://inkscroller-backend-391760656950.us-central1.run.app"]
+    },
+    {
+      "name": "InkScroller • PROD Cloud",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main_pro.dart",
+      "args": ["--flavor", "pro", "--dart-define=API_BASE_URL=https://inkscroller-backend-806863502436.us-central1.run.app"]
+    }
+  ]
+}
