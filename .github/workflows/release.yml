@@ -2,7 +2,8 @@ name: Release (Public)
 
 # Triggered manually or by a tag push.
 # Downloads the pre-built pro APK from the private repo release
-# and publishes it here with user-facing release notes.
+# and publishes it here using the user-facing release notes from
+# release-notes/{tag}.md in this repository.
 #
 # Required secrets:
 #   GH_PAT — Personal Access Token with `repo` scope (to read the private repo release)
@@ -35,11 +36,24 @@ jobs:
     timeout-minutes: 10
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Resolve tag
         id: tag
         run: |
           TAG="${{ github.event_name == 'push' && github.ref_name || inputs.tag }}"
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+
+      - name: Verify release notes exist
+        run: |
+          NOTES="release-notes/${{ steps.tag.outputs.tag }}.md"
+          if [ ! -f "$NOTES" ]; then
+            echo "[ERROR] $NOTES not found."
+            echo "Create release-notes/${{ steps.tag.outputs.tag }}.md before triggering this workflow."
+            exit 1
+          fi
+          echo "[OK] Found $NOTES"
 
       - name: Download pro APK from private release
         env:
@@ -51,34 +65,13 @@ jobs:
             --pattern "app-pro-release.apk" \
             --dir dist/
 
-      - name: Generate public release notes
-        env:
-          GH_TOKEN: ${{ secrets.GH_PAT }}
-          TAG: ${{ steps.tag.outputs.tag }}
-        run: |
-          # Fetch release body from private repo and strip internal references
-          gh release view "$TAG" \
-            --repo "$PRIVATE_REPO" \
-            --json body \
-            --jq '.body' \
-          | sed 's/ (TASK-[0-9]\+)//g' \
-          | sed 's/ (#[0-9]\+)//g' \
-          > release_notes.md
-
-          # Append download instructions
-          cat >> release_notes.md << 'EOF'
-
----
-
-**Requirements:** Android 5.0+ · Enable "Install from unknown sources" before installing.
-EOF
-
       - name: Create or update GitHub Release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG: ${{ steps.tag.outputs.tag }}
         run: |
           APK="dist/app-pro-release.apk"
+          NOTES="release-notes/$TAG.md"
 
           if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
             gh release upload "$TAG" "$APK" --clobber --repo "$GITHUB_REPOSITORY"
@@ -86,6 +79,6 @@ EOF
             gh release create "$TAG" \
               --repo "$GITHUB_REPOSITORY" \
               --title "InkScroller $TAG" \
-              --notes-file release_notes.md \
+              --notes-file "$NOTES" \
               "$APK"
           fi
