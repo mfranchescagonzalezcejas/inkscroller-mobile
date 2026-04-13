@@ -1,6 +1,6 @@
 # InkScroller — Flutter Mobile Client
 
-> A full-featured manga reader app built with Flutter, Clean Architecture, and Firebase. Personal portfolio project by **Mercedes Franchesca Gonzalez Cejas** (MGC Studio).
+> A full-featured manga reader app built with Flutter, Clean Architecture, and Firebase. Personal portfolio project by **Mercedes Franchesca Gonzalez Cejas**.
 
 ![Flutter](https://img.shields.io/badge/Flutter-3.41.5-02569B?logo=flutter&logoColor=white)
 ![Dart](https://img.shields.io/badge/Dart-3.9-0175C2?logo=dart&logoColor=white)
