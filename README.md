@@ -40,9 +40,32 @@ This repository is the **Flutter mobile client**. It targets Android (3 flavors:
 
 ---
 
-## Architecture
+## Why This Architecture?
+
+### The Problem
+Manga apps are deceptively complex. You need to handle:
+- **Network unpredictability** — APIs time out, return partial data, or fail mid-chapter
+- **Image caching at scale** — thousands of cover images, chapter pages that need pre-fetching
+- **State persistence** — reading progress survives app kills, user library syncs across devices
+- **Offline fallback** — user expects to read even when connectivity drops
+
+### The Solution
 
 **Screaming Architecture** (outer structure) + **Clean Architecture** (inner layers), applied pragmatically.
+
+I chose this over alternatives for specific reasons:
+
+| Alternative | Why I Didn't Choose It |
+|-------------|----------------------|
+| **BLoC pattern** | Over-engineered for this app's complexity. Riverpod's `StateNotifierProvider` gives me mutable state with testability, without the ceremony. |
+| **Freezed immutable DTOs** | Adds build-time code generation. I wanted faster iteration during development. Manual mapping keeps it explicit and debuggable. |
+| **Isar/Drift for images** | Network images are the content. SQLite is for metadata only — simpler is better for a portfolio project with no team. |
+| **go_router's redirect** | Used `StatefulShellRoute` for persistent nav — cleaner than manual state management. |
+
+**Key tradeoffs made:**
+- **StateNotifiers over AsyncValue** — explicit `isLoading`/`error` states let me show custom UIs (shimmer, retry buttons)
+- **Dio over http package** — interceptors for auth tokens and retry logic on 5xx errors
+- **SharedPreferences over Hive** — simple key-value is enough for preferences; no migration burden
 
 ```
 lib/
@@ -187,6 +210,80 @@ The app consumes the [InkScroller Backend](https://github.com/mfranchescagonzale
 | `GET/POST` | `/users/me/reading-progress` | Per-chapter reading progress |
 
 > Full integration details: [`docs/API_INTEGRATION.md`](docs/API_INTEGRATION.md)
+
+---
+
+## Technical Challenges Solved
+
+This section documents the hardest problems I solved — the kind of questions that come up in senior interviews.
+
+### 1. Cold Start Latency on Cloud Run
+
+**Problem:** Cloud Run scales to zero. First request after idle takes 10+ seconds.
+
+**Solution:** 
+- 60-second Dio timeout configured
+- Background service pre-warms endpoint every 30s
+- Reader pre-fetches next chapter while reading current one
+
+**Result:** User rarely sees cold start. When they do, reader shows skeleton immediately.
+
+---
+
+### 2. Reader Mode Resolution (Vertical vs Paged)
+
+**Problem:** Manga can be read vertically (webtoon) or paged (traditional). How to auto-detect?
+
+**Solution:** Resolution hierarchy:
+
+```
+per-title override → global preference → content heuristic → default
+```
+
+- User sets preference per manga (persisted)
+- Falls back to global preference (Settings)
+- Falls back to content type from MangaDex API
+- Default: vertical scroll
+
+**Code:** [`lib/features/library/domain/repositories/manga_repository.dart`](lib/features/library/domain/repositories/manga_repository.dart)
+
+---
+
+### 3. Offline Library Access
+
+**Problem:** User wants to see their library even when offline.
+
+**Solution:** Local-first architecture:
+- `SharedPreferences` caches user library JSON
+- On connectivity restore, background sync merges changes
+- Conflict resolution: server wins (single-user, no collaboration)
+
+---
+
+### 4. Firebase Auth Hot Restart
+
+**Problem:** `initializeApp` fails on hot restart — Firebase throws "already initialized".
+
+**Solution:** Guard in `firebase_options.dart`:
+
+```dart
+try {
+  await Firebase.initializeApp();
+} on FirebaseException catch (e) {
+  if (e.code != 'already-initialized') rethrow;
+}
+```
+
+---
+
+### 5. Image Cache at Scale (57MB APK)
+
+**Problem:** Cover images accumulate, eventually OOM on older devices.
+
+**Solution:**
+- `cached_network_image` with 7-day TTL
+- Manual cache clear in Settings (shows size)
+- Cover precache on home load, not all at once
 
 ---
 
