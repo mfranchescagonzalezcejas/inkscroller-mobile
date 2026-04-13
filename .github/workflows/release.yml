@@ -1,5 +1,12 @@
 name: Release (Public)
 
+# Triggered manually or by a tag push.
+# Downloads the pre-built pro APK from the private repo release
+# and publishes it here with user-facing release notes.
+#
+# Required secrets:
+#   GH_PAT — Personal Access Token with `repo` scope (to read the private repo release)
+
 on:
   push:
     tags:
@@ -7,7 +14,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: 'Tag to release (e.g. v0.6.0)'
+        description: 'Tag to publish (must exist in private repo, e.g. v0.6.0)'
         required: true
         type: string
 
@@ -18,133 +25,66 @@ concurrency:
   group: release-${{ github.ref }}
   cancel-in-progress: false
 
+env:
+  PRIVATE_REPO: mfranchescagonzalezcejas/inkscroller_flutter
+
 jobs:
-  build-and-release:
-    name: Build & Publish
+  publish:
+    name: Publish public release
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    timeout-minutes: 10
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
       - name: Resolve tag
         id: tag
         run: |
           TAG="${{ github.event_name == 'push' && github.ref_name || inputs.tag }}"
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
-          echo "version=${TAG#v}" >> "$GITHUB_OUTPUT"
 
-      - name: Validate tag matches pubspec version
-        run: |
-          TAG_VERSION="${{ steps.tag.outputs.version }}"
-          PUBSPEC_VERSION=$(grep '^version:' pubspec.yaml | sed 's/version: //')
-          PUBSPEC_SEMVER="${PUBSPEC_VERSION%%+*}"
-
-          if [ "$PUBSPEC_SEMVER" != "$TAG_VERSION" ]; then
-            echo "[ERROR] Tag v$TAG_VERSION does not match pubspec.yaml $PUBSPEC_VERSION"
-            exit 1
-          fi
-          echo "[OK] $TAG_VERSION matches pubspec.yaml $PUBSPEC_VERSION"
-
-      - name: Set up Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: '17'
-
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.41.5'
-          cache: true
-
-      - name: Install FVM
-        run: dart pub global activate fvm
-
-      - name: Add pub cache to PATH
-        run: echo "$HOME/.pub-cache/bin" >> "$GITHUB_PATH"
-
-      - name: Install FVM-pinned SDK
-        run: fvm install
-
-      - name: Install dependencies
-        run: fvm flutter pub get
-
-      - name: Write Firebase dart-defines
-        run: |
-          mkdir -p .dart-defines
-          echo '${{ secrets.FIREBASE_DART_DEFINES_JSON }}' > .dart-defines/firebase.json
-
-      - name: Build pro APK
-        run: |
-          fvm flutter build apk \
-            --flavor pro \
-            -t lib/main_pro.dart \
-            --dart-define="API_BASE_URL=${{ secrets.API_BASE_URL_PRO }}" \
-            --dart-define-from-file=.dart-defines/firebase.json
-
-      - name: Generate release notes
-        id: notes
-        run: |
-          PREVIOUS_TAG=$(git tag --list 'v*' --sort=-version:refname \
-            | grep -v "^${{ steps.tag.outputs.tag }}$" | head -1 || true)
-
-          if [ -n "$PREVIOUS_TAG" ]; then
-            RANGE="${PREVIOUS_TAG}..${{ steps.tag.outputs.tag }}"
-          else
-            RANGE="HEAD"
-          fi
-
-          FEAT_LINES=$(git log "$RANGE" --pretty=format:"%s" \
-            | grep -E '^feat(\([^)]+\))?: ' \
-            | sed 's/^feat(\([^)]+\)): //' \
-            | sed 's/^feat: //' \
-            | sed 's/ (TASK-[0-9]\+)//' \
-            | sed 's/^/- /' || true)
-
-          FIX_LINES=$(git log "$RANGE" --pretty=format:"%s" \
-            | grep -E '^fix(\([^)]+\))?: ' \
-            | sed 's/^fix(\([^)]+\)): //' \
-            | sed 's/^fix: //' \
-            | sed 's/ (TASK-[0-9]\+)//' \
-            | sed 's/^/- /' || true)
-
-          {
-            echo "## What's new in ${{ steps.tag.outputs.tag }}"
-            echo ""
-            if [ -n "$FEAT_LINES" ]; then
-              echo "### New"
-              echo "$FEAT_LINES"
-              echo ""
-            fi
-            if [ -n "$FIX_LINES" ]; then
-              echo "### Fixed"
-              echo "$FIX_LINES"
-              echo ""
-            fi
-            if [ -z "$FEAT_LINES" ] && [ -z "$FIX_LINES" ]; then
-              echo "Internal improvements and stability fixes."
-              echo ""
-            fi
-            echo "---"
-            echo ""
-            echo "**Requirements:** Android 5.0+ · Enable \"Install from unknown sources\" before installing."
-          } > release_notes.md
-
-      - name: Create GitHub Release
+      - name: Download pro APK from private release
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_PAT }}
         run: |
-          TAG="${{ steps.tag.outputs.tag }}"
-          APK="build/app/outputs/flutter-apk/app-pro-release.apk"
+          mkdir -p dist
+          gh release download "${{ steps.tag.outputs.tag }}" \
+            --repo "$PRIVATE_REPO" \
+            --pattern "app-pro-release.apk" \
+            --dir dist/
 
-          if gh release view "$TAG" >/dev/null 2>&1; then
-            gh release upload "$TAG" "$APK" --clobber
+      - name: Generate public release notes
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+          TAG: ${{ steps.tag.outputs.tag }}
+        run: |
+          # Fetch release body from private repo and strip internal references
+          gh release view "$TAG" \
+            --repo "$PRIVATE_REPO" \
+            --json body \
+            --jq '.body' \
+          | sed 's/ (TASK-[0-9]\+)//g' \
+          | sed 's/ (#[0-9]\+)//g' \
+          > release_notes.md
+
+          # Append download instructions
+          cat >> release_notes.md << 'EOF'
+
+---
+
+**Requirements:** Android 5.0+ · Enable "Install from unknown sources" before installing.
+EOF
+
+      - name: Create or update GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ steps.tag.outputs.tag }}
+        run: |
+          APK="dist/app-pro-release.apk"
+
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release upload "$TAG" "$APK" --clobber --repo "$GITHUB_REPOSITORY"
           else
             gh release create "$TAG" \
+              --repo "$GITHUB_REPOSITORY" \
               --title "InkScroller $TAG" \
               --notes-file release_notes.md \
               "$APK"
