@@ -21,6 +21,8 @@ extension MangaModelMapper on MangaModel {
       // Note: popularity is stored in score for display, but we could add a
       // separate field in Manga entity if needed for sorting/filtering
       authors: authors,
+      readChaptersCount: readChaptersCount,
+      totalChaptersCount: totalChaptersCount,
     );
   }
 }

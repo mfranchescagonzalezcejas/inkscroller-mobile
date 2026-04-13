@@ -140,6 +140,24 @@ All foundational phases are done. The codebase has Clean Architecture, test cove
 
 **Expected outcome:** App has a premium, editorial-grade visual identity consistent across all screens and is aligned with Sprint 3 compliance/release gates.
 
+### Engineering Track — Release Automation & CI/CD Hardening (TASK-031)
+
+**Objective:** Replace the manual release process (GitHub Release UI + PowerShell-only distribution script) with a fully automated, tag-driven pipeline.  
+**Entry dependency:** None — infrastructure track, runs parallel to any feature phase.  
+**Status:** Complete (Sprint 4).
+
+| Phase | Scope | Status |
+|-------|-------|--------|
+| 1 | Tag-driven `release.yml` workflow (quality gates + version validation) | ✅ Done |
+| 2 | Firebase App Distribution integrated in release workflow | ✅ Done |
+| 3 | Cross-platform release scripts (`release.sh` / `release.ps1`) | ✅ Done |
+| 4 | Documentation update (`RELEASING.md`, `ci.md`, `App_Distribution.md`) | ✅ Done |
+| 5 | RC tag validation + legacy `firebase-distribution.yml` removal | ✅ Done |
+
+**Expected outcome:** A single `./scripts/release.sh X.Y.Z` command is all a developer needs to trigger a full release — quality gates, APK builds, GitHub Release, and Firebase distribution included.
+
+**Detail:** [`docs/RELEASING.md`](RELEASING.md) — release flow, secrets, and rollback guidance.
+
 ---
 
 ## Future Directions

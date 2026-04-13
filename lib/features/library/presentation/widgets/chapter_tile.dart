@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/l10n/l10n.dart';
+import '../../domain/chapter_progress_utils.dart';
 import '../../domain/entities/chapter.dart';
 
 /// List tile widget for a single chapter entry in [MangaDetailPage].
@@ -9,15 +10,21 @@ import '../../domain/entities/chapter.dart';
 /// whether the chapter is readable in-app or opens an external URL.
 class ChapterTile extends StatelessWidget {
   final Chapter chapter;
+  final bool isRead;
   final VoidCallback? onTap;
 
-  const ChapterTile({super.key, required this.chapter, this.onTap});
+  const ChapterTile({
+    super.key,
+    required this.chapter,
+    this.isRead = false,
+    this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
     final label = chapter.number == null
         ? context.l10n.extraLabel
-        : context.l10n.chapterLabel(chapter.number.toString());
+        : context.l10n.chapterLabel(formatChapterNumber(chapter.number!));
 
     Icon? trailing;
 
@@ -28,6 +35,11 @@ class ChapterTile extends StatelessWidget {
     }
 
     return ListTile(
+      leading: Icon(
+        isRead ? Icons.check_circle : Icons.radio_button_unchecked,
+        size: 18,
+        color: isRead ? Theme.of(context).colorScheme.primary : null,
+      ),
       title: Text(label),
       subtitle: chapter.title != null ? Text(chapter.title!) : null,
       trailing: trailing,

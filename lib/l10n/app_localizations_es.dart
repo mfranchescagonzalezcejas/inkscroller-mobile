@@ -159,6 +159,19 @@ class AppLocalizationsEs extends AppLocalizations {
   String get addToLibrary => 'Añadir a biblioteca';
 
   @override
+  String get removeFromLibrary => 'Quitar de biblioteca';
+
+  @override
+  String libraryItemAdded(Object title) {
+    return '$title se añadió a tu biblioteca';
+  }
+
+  @override
+  String libraryItemRemoved(Object title) {
+    return '$title se quitó de tu biblioteca';
+  }
+
+  @override
   String get genreAll => 'Todo';
 
   @override
@@ -191,7 +204,31 @@ class AppLocalizationsEs extends AppLocalizations {
   String get libraryTabOnHold => 'Pausado';
 
   @override
+  String get libraryEmpty =>
+      'Tu biblioteca está vacía. Añadí mangas desde Inicio o el detalle.';
+
+  @override
+  String get libraryEmptyTab => 'Todavía no hay mangas en esta pestaña.';
+
+  @override
+  String get libraryStatusReading => 'Marcar como Leyendo';
+
+  @override
+  String get libraryStatusCompleted => 'Marcar como Completo';
+
+  @override
+  String get libraryStatusPaused => 'Marcar como Pausado';
+
+  @override
+  String get libraryStatusUpdated => 'Estado de biblioteca actualizado';
+
+  @override
   String get libraryUnknownMeta => 'Sin dato';
+
+  @override
+  String libraryProgressValue(int readCount, int totalCount) {
+    return '$readCount / $totalCount leídos';
+  }
 
   @override
   String get exploreTitle => 'Explorar';
@@ -211,6 +248,31 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get externalChapterGoBackAction => 'Volver';
+
+  @override
+  String get readingProgressDialogTitle => 'Actualizar progreso de lectura';
+
+  @override
+  String readingProgressDialogMessage(int count, Object chapterLabel) {
+    return 'Se van a marcar $count capítulos hasta $chapterLabel como leídos.';
+  }
+
+  @override
+  String readingProgressDialogExternalMessage(int count, Object chapterLabel) {
+    return 'Este capítulo se abre afuera de InkScroller. ¿Querés marcar $count capítulos hasta $chapterLabel antes de salir?';
+  }
+
+  @override
+  String get readingProgressConfirmAction => 'Marcar';
+
+  @override
+  String get readingProgressOpenOnlyAction => 'Abrir sin marcar';
+
+  @override
+  String get readingProgressUndoAction => 'Deshacer';
+
+  @override
+  String get readingProgressUpdatedMessage => 'Progreso de lectura actualizado';
 
   @override
   String get navHome => 'Inicio';
@@ -296,4 +358,81 @@ class AppLocalizationsEs extends AppLocalizations {
   String profileVersionLabel(Object version, Object buildNumber) {
     return 'Versión $version (Build $buildNumber)';
   }
+
+  @override
+  String get authSignInTitle => 'Iniciá sesión';
+
+  @override
+  String get authSignInSubtitle => 'Tu colección de manga te espera';
+
+  @override
+  String get authEmailLabel => 'Email';
+
+  @override
+  String get authPasswordLabel => 'Contraseña';
+
+  @override
+  String get authSignInButton => 'Iniciar sesión';
+
+  @override
+  String get authNoAccount => '¿No tenés cuenta? Crear una';
+
+  @override
+  String get authContinueAsGuest => 'Continuar como invitada';
+
+  @override
+  String get authEmailRequired => 'Ingresá tu email.';
+
+  @override
+  String get authEmailInvalid => 'Ingresá un email válido.';
+
+  @override
+  String get authPasswordRequired => 'Ingresá tu contraseña.';
+
+  @override
+  String get authPasswordTooShort =>
+      'La contraseña debe tener al menos 6 caracteres.';
+
+  @override
+  String get authCreateAccountTitle => 'Crear cuenta';
+
+  @override
+  String get authCreateAccountSubtitle => 'Unite a la colección';
+
+  @override
+  String get authCreateAccountButton => 'Crear cuenta';
+
+  @override
+  String get authHaveAccount => '¿Ya tenés cuenta? Iniciá sesión';
+
+  @override
+  String get readerSettingsDirection => 'Dirección de lectura';
+
+  @override
+  String get readerSettingsBrightness => 'Brillo';
+
+  @override
+  String get readerSettingsAmoled => 'Negro AMOLED';
+
+  @override
+  String get readerSettingsAmoledSubtitle => 'Ahorrá batería en pantallas OLED';
+
+  @override
+  String get readerSettingsImmersive => 'Modo inmersivo';
+
+  @override
+  String get readerSettingsImmersiveSubtitle =>
+      'Ocultar barras de navegación del sistema';
+
+  @override
+  String get readerSettingsConfirm => 'Confirmar ajustes';
+
+  @override
+  String get readerDirectionLtr => 'LTR';
+
+  @override
+  String get readerDirectionRtl => 'RTL';
+
+  @override
+  String get readerDirectionVertical => 'Vertical';
 }

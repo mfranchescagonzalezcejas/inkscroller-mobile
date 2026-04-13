@@ -20,10 +20,16 @@ import '../../features/library/data/datasources/library_local_ds.dart';
 import '../../features/library/data/datasources/library_local_ds_impl.dart';
 import '../../features/library/data/datasources/library_remote_ds.dart';
 import '../../features/library/data/datasources/library_remote_ds_impl.dart';
+import '../../features/library/data/datasources/user_library_remote_ds.dart';
+import '../../features/library/data/datasources/user_library_remote_ds_impl.dart';
 import '../../features/library/data/repositories/library_repository_impl.dart';
 import '../../features/library/data/repositories/per_title_override_repository_impl.dart';
+import '../../features/library/data/repositories/reading_progress_repository_impl.dart';
+import '../../features/library/data/repositories/user_library_repository_impl.dart';
 import '../../features/library/domain/repositories/library_repository.dart';
 import '../../features/library/domain/repositories/per_title_override_repository.dart';
+import '../../features/library/domain/repositories/reading_progress_repository.dart';
+import '../../features/library/domain/repositories/user_library_repository.dart';
 import '../../features/library/domain/usecases/get_chapter_pages.dart';
 import '../../features/library/domain/usecases/get_manga_chapters.dart';
 import '../../features/library/domain/usecases/get_manga_detail.dart';
@@ -135,6 +141,21 @@ Future<void> initDI() async {
   // Library - per-title override repository
   sl.registerLazySingleton<PerTitleOverrideRepository>(
     () => PerTitleOverrideRepositoryImpl(sl<SharedPreferences>()),
+  );
+
+  sl.registerLazySingleton<ReadingProgressRepository>(
+    () => ReadingProgressRepositoryImpl(sl<SharedPreferences>()),
+  );
+
+  sl.registerLazySingleton<UserLibraryRemoteDataSource>(
+    () => UserLibraryRemoteDataSourceImpl(dioClient: sl<DioClient>()),
+  );
+
+  sl.registerLazySingleton<UserLibraryRepository>(
+    () => UserLibraryRepositoryImpl(
+      sl<SharedPreferences>(),
+      sl<UserLibraryRemoteDataSource>(),
+    ),
   );
 
   sl.registerLazySingleton<SavePerTitleOverride>(

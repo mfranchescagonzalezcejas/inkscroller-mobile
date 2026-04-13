@@ -1,4 +1,7 @@
 {
-  "java.configuration.updateBuildConfiguration": "automatic",
-  "dart.flutterSdkPath": ".fvm/versions/3.41.5"
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "terminal.integrated.env.linux": {
+        "JAVA_HOME": "/home/shana1499/.jdks/jbr-17.0.14",
+        "PATH": "/home/shana1499/.jdks/jbr-17.0.14/bin:${env:PATH}"
+    }
 }

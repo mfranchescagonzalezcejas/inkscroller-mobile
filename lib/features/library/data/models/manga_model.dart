@@ -14,6 +14,8 @@ class MangaModel {
   final int? rank;
   final int? popularity;
   final List<String> authors;
+  final int? readChaptersCount;
+  final int? totalChaptersCount;
 
   const MangaModel({
     required this.id,
@@ -27,6 +29,8 @@ class MangaModel {
     this.rank,
     this.popularity,
     this.authors = const [],
+    this.readChaptersCount,
+    this.totalChaptersCount,
   });
 
   /// Deserializes a [MangaModel] from the JSON map returned by the API.
@@ -43,6 +47,18 @@ class MangaModel {
       rank: (json['rank'] as num?)?.toInt(),
       popularity: json['popularity'] as int?,
       authors: _parseStringList(json['authors']),
+      readChaptersCount: _readInt(json, const <String>[
+        'readChaptersCount',
+        'readCount',
+        'chaptersRead',
+        'read_chapters_count',
+      ]),
+      totalChaptersCount: _readInt(json, const <String>[
+        'totalChaptersCount',
+        'totalCount',
+        'chaptersTotal',
+        'total_chapters_count',
+      ]),
     );
   }
 
@@ -60,7 +76,34 @@ class MangaModel {
       'rank': rank,
       'popularity': popularity,
       'authors': authors,
+      'readChaptersCount': readChaptersCount,
+      'totalChaptersCount': totalChaptersCount,
     };
+  }
+
+  static int? _readInt(Map<String, dynamic> json, List<String> keys) {
+    for (final key in keys) {
+      final dynamic value = json[key];
+      if (value is num) {
+        return value.toInt();
+      }
+    }
+
+    for (final containerKey in const <String>['progress', 'readingProgress']) {
+      final dynamic container = json[containerKey];
+      if (container is! Map<String, dynamic>) {
+        continue;
+      }
+
+      for (final key in keys) {
+        final dynamic value = container[key];
+        if (value is num) {
+          return value.toInt();
+        }
+      }
+    }
+
+    return null;
   }
 
   static List<String> _parseStringList(Object? rawList) {

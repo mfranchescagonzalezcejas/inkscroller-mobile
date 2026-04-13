@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../../core/design/design_tokens.dart';
 import '../../../../core/l10n/l10n.dart';
 import '../../../preferences/presentation/providers/preferences_provider.dart';
 import '../../domain/entities/chapter.dart';
 import '../../domain/entities/reader_mode.dart';
 import '../providers/per_title_override_provider.dart';
 import '../providers/reader/reader_provider.dart';
+import '../providers/reader/reader_ui_provider.dart';
 import '../widgets/paged_reader_view.dart';
+import '../widgets/reader_settings_sheet.dart';
 import '../widgets/vertical_reader_view.dart';
 
 /// Vertical-scroll chapter reader that displays page images with pre-cache progress.
@@ -74,6 +78,17 @@ class _ReaderPageState extends ConsumerState<ReaderPage> {
   }
 
   @override
+  void dispose() {
+    // Restore system UI directly — ref is not usable inside dispose() in
+    // Riverpod's ConsumerStatefulWidget lifecycle.
+    SystemChrome.setEnabledSystemUIMode(
+      SystemUiMode.manual,
+      overlays: SystemUiOverlay.values,
+    );
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     // ── P0-F2: External chapter guard ────────────────────────────────────
     // When the chapter entity is known and flagged as external, render a
@@ -119,12 +134,47 @@ class _ReaderPageState extends ConsumerState<ReaderPage> {
       return Scaffold(body: Center(child: Text(state.failure!.message)));
     }
 
+    final uiState = ref.watch(readerUiProvider(widget.chapterId));
+    final background =
+        uiState.amoledBlack ? Colors.black : AppColors.voidLowest;
+
     return Scaffold(
-      appBar: AppBar(title: Text(context.l10n.readingChapter)),
-      body: switch (state.readerMode) {
-        ReaderMode.vertical => VerticalReaderView(pages: state.pages),
-        ReaderMode.paged => PagedReaderView(pages: state.pages),
-      },
+      backgroundColor: background,
+      appBar: AppBar(
+        title: Text(context.l10n.readingChapter),
+        backgroundColor: background,
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.tune_outlined),
+            tooltip: context.l10n.readerSettingsConfirm,
+            onPressed: () => showReaderSettings(
+              context,
+              chapterId: widget.chapterId,
+              mangaId: widget.mangaId,
+            ),
+          ),
+        ],
+      ),
+      body: Stack(
+        children: <Widget>[
+          switch (state.readerMode) {
+            ReaderMode.vertical => VerticalReaderView(pages: state.pages),
+            ReaderMode.paged => PagedReaderView(pages: state.pages),
+          },
+          // Brightness overlay — black with opacity inversely proportional to
+          // the brightness level. At full brightness (1.0) the overlay is
+          // invisible; at minimum (0.1) it dims the content significantly.
+          if (uiState.brightness < 1.0)
+            Positioned.fill(
+              child: IgnorePointer(
+                child: ColoredBox(
+                  color: Colors.black
+                      .withValues(alpha: 1.0 - uiState.brightness),
+                ),
+              ),
+            ),
+        ],
+      ),
     );
   }
 }

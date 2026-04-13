@@ -25,29 +25,29 @@ class FirebaseOptionsSelector {
     switch (FlavorConfig.instance.flavor) {
       case Flavor.dev:
         return const FirebaseOptions(
-          apiKey: String.fromEnvironment('FIREBASE_ANDROID_DEV_API_KEY', defaultValue: 'REPLACE_ME'),
-          appId: String.fromEnvironment('FIREBASE_ANDROID_DEV_APP_ID', defaultValue: 'REPLACE_ME'),
-          messagingSenderId: String.fromEnvironment('FIREBASE_ANDROID_DEV_MESSAGING_SENDER_ID', defaultValue: 'REPLACE_ME'),
-          projectId: String.fromEnvironment('FIREBASE_ANDROID_DEV_PROJECT_ID', defaultValue: 'REPLACE_ME'),
-          storageBucket: String.fromEnvironment('FIREBASE_ANDROID_DEV_STORAGE_BUCKET', defaultValue: 'REPLACE_ME'),
+          apiKey: String.fromEnvironment('FIREBASE_ANDROID_DEV_API_KEY'),
+          appId: String.fromEnvironment('FIREBASE_ANDROID_DEV_APP_ID'),
+          messagingSenderId: String.fromEnvironment('FIREBASE_ANDROID_DEV_MESSAGING_SENDER_ID'),
+          projectId: String.fromEnvironment('FIREBASE_ANDROID_DEV_PROJECT_ID'),
+          storageBucket: String.fromEnvironment('FIREBASE_ANDROID_DEV_STORAGE_BUCKET'),
         );
 
       case Flavor.staging:
         return const FirebaseOptions(
-          apiKey: String.fromEnvironment('FIREBASE_ANDROID_STAGING_API_KEY', defaultValue: 'REPLACE_ME'),
-          appId: String.fromEnvironment('FIREBASE_ANDROID_STAGING_APP_ID', defaultValue: 'REPLACE_ME'),
-          messagingSenderId: String.fromEnvironment('FIREBASE_ANDROID_STAGING_MESSAGING_SENDER_ID', defaultValue: 'REPLACE_ME'),
-          projectId: String.fromEnvironment('FIREBASE_ANDROID_STAGING_PROJECT_ID', defaultValue: 'REPLACE_ME'),
-          storageBucket: String.fromEnvironment('FIREBASE_ANDROID_STAGING_STORAGE_BUCKET', defaultValue: 'REPLACE_ME'),
+          apiKey: String.fromEnvironment('FIREBASE_ANDROID_STAGING_API_KEY'),
+          appId: String.fromEnvironment('FIREBASE_ANDROID_STAGING_APP_ID'),
+          messagingSenderId: String.fromEnvironment('FIREBASE_ANDROID_STAGING_MESSAGING_SENDER_ID'),
+          projectId: String.fromEnvironment('FIREBASE_ANDROID_STAGING_PROJECT_ID'),
+          storageBucket: String.fromEnvironment('FIREBASE_ANDROID_STAGING_STORAGE_BUCKET'),
         );
 
       case Flavor.pro:
         return const FirebaseOptions(
-          apiKey: String.fromEnvironment('FIREBASE_ANDROID_PRO_API_KEY', defaultValue: 'REPLACE_ME'),
-          appId: String.fromEnvironment('FIREBASE_ANDROID_PRO_APP_ID', defaultValue: 'REPLACE_ME'),
-          messagingSenderId: String.fromEnvironment('FIREBASE_ANDROID_PRO_MESSAGING_SENDER_ID', defaultValue: 'REPLACE_ME'),
-          projectId: String.fromEnvironment('FIREBASE_ANDROID_PRO_PROJECT_ID', defaultValue: 'REPLACE_ME'),
-          storageBucket: String.fromEnvironment('FIREBASE_ANDROID_PRO_STORAGE_BUCKET', defaultValue: 'REPLACE_ME'),
+          apiKey: String.fromEnvironment('FIREBASE_ANDROID_PRO_API_KEY'),
+          appId: String.fromEnvironment('FIREBASE_ANDROID_PRO_APP_ID'),
+          messagingSenderId: String.fromEnvironment('FIREBASE_ANDROID_PRO_MESSAGING_SENDER_ID'),
+          projectId: String.fromEnvironment('FIREBASE_ANDROID_PRO_PROJECT_ID'),
+          storageBucket: String.fromEnvironment('FIREBASE_ANDROID_PRO_STORAGE_BUCKET'),
         );
     }
   }
@@ -57,32 +57,32 @@ class FirebaseOptionsSelector {
     switch (FlavorConfig.instance.flavor) {
       case Flavor.dev:
         return const FirebaseOptions(
-          apiKey: String.fromEnvironment('FIREBASE_IOS_DEV_API_KEY', defaultValue: 'REPLACE_ME'),
-          appId: String.fromEnvironment('FIREBASE_IOS_DEV_APP_ID', defaultValue: 'REPLACE_ME'),
-          messagingSenderId: String.fromEnvironment('FIREBASE_IOS_DEV_MESSAGING_SENDER_ID', defaultValue: 'REPLACE_ME'),
-          projectId: String.fromEnvironment('FIREBASE_IOS_DEV_PROJECT_ID', defaultValue: 'REPLACE_ME'),
-          storageBucket: String.fromEnvironment('FIREBASE_IOS_DEV_STORAGE_BUCKET', defaultValue: 'REPLACE_ME'),
-          iosBundleId: String.fromEnvironment('FIREBASE_IOS_DEV_BUNDLE_ID', defaultValue: 'com.example.inkscroller'),
+          apiKey: String.fromEnvironment('FIREBASE_IOS_DEV_API_KEY'),
+          appId: String.fromEnvironment('FIREBASE_IOS_DEV_APP_ID'),
+          messagingSenderId: String.fromEnvironment('FIREBASE_IOS_DEV_MESSAGING_SENDER_ID'),
+          projectId: String.fromEnvironment('FIREBASE_IOS_DEV_PROJECT_ID'),
+          storageBucket: String.fromEnvironment('FIREBASE_IOS_DEV_STORAGE_BUCKET'),
+          iosBundleId: String.fromEnvironment('FIREBASE_IOS_DEV_BUNDLE_ID'),
         );
 
       case Flavor.staging:
         return const FirebaseOptions(
-          apiKey: String.fromEnvironment('FIREBASE_IOS_STAGING_API_KEY', defaultValue: 'REPLACE_ME'),
-          appId: String.fromEnvironment('FIREBASE_IOS_STAGING_APP_ID', defaultValue: 'REPLACE_ME'),
-          messagingSenderId: String.fromEnvironment('FIREBASE_IOS_STAGING_MESSAGING_SENDER_ID', defaultValue: 'REPLACE_ME'),
-          projectId: String.fromEnvironment('FIREBASE_IOS_STAGING_PROJECT_ID', defaultValue: 'REPLACE_ME'),
-          storageBucket: String.fromEnvironment('FIREBASE_IOS_STAGING_STORAGE_BUCKET', defaultValue: 'REPLACE_ME'),
-          iosBundleId: String.fromEnvironment('FIREBASE_IOS_STAGING_BUNDLE_ID', defaultValue: 'com.example.inkscroller'),
+          apiKey: String.fromEnvironment('FIREBASE_IOS_STAGING_API_KEY'),
+          appId: String.fromEnvironment('FIREBASE_IOS_STAGING_APP_ID'),
+          messagingSenderId: String.fromEnvironment('FIREBASE_IOS_STAGING_MESSAGING_SENDER_ID'),
+          projectId: String.fromEnvironment('FIREBASE_IOS_STAGING_PROJECT_ID'),
+          storageBucket: String.fromEnvironment('FIREBASE_IOS_STAGING_STORAGE_BUCKET'),
+          iosBundleId: String.fromEnvironment('FIREBASE_IOS_STAGING_BUNDLE_ID'),
         );
 
       case Flavor.pro:
         return const FirebaseOptions(
-          apiKey: String.fromEnvironment('FIREBASE_IOS_PRO_API_KEY', defaultValue: 'REPLACE_ME'),
-          appId: String.fromEnvironment('FIREBASE_IOS_PRO_APP_ID', defaultValue: 'REPLACE_ME'),
-          messagingSenderId: String.fromEnvironment('FIREBASE_IOS_PRO_MESSAGING_SENDER_ID', defaultValue: 'REPLACE_ME'),
-          projectId: String.fromEnvironment('FIREBASE_IOS_PRO_PROJECT_ID', defaultValue: 'REPLACE_ME'),
-          storageBucket: String.fromEnvironment('FIREBASE_IOS_PRO_STORAGE_BUCKET', defaultValue: 'REPLACE_ME'),
-          iosBundleId: String.fromEnvironment('FIREBASE_IOS_PRO_BUNDLE_ID', defaultValue: 'com.example.inkscroller'),
+          apiKey: String.fromEnvironment('FIREBASE_IOS_PRO_API_KEY'),
+          appId: String.fromEnvironment('FIREBASE_IOS_PRO_APP_ID'),
+          messagingSenderId: String.fromEnvironment('FIREBASE_IOS_PRO_MESSAGING_SENDER_ID'),
+          projectId: String.fromEnvironment('FIREBASE_IOS_PRO_PROJECT_ID'),
+          storageBucket: String.fromEnvironment('FIREBASE_IOS_PRO_STORAGE_BUCKET'),
+          iosBundleId: String.fromEnvironment('FIREBASE_IOS_PRO_BUNDLE_ID'),
         );
     }
   }

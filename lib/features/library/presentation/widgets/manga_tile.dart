@@ -13,17 +13,33 @@ import 'cover_image.dart';
 /// Uses [CoverImage] for cached network image rendering.
 class MangaTile extends StatelessWidget {
   final Manga manga;
+  final int? readChaptersCount;
+  final int? totalChaptersCount;
 
-  const MangaTile({super.key, required this.manga});
+  const MangaTile({
+    super.key,
+    required this.manga,
+    this.readChaptersCount,
+    this.totalChaptersCount,
+  });
 
   @override
   Widget build(BuildContext context) {
     final double? safeScore = manga.score;
     final String badgeLabel = safeScore?.toStringAsFixed(1) ?? '--';
-    final String secondaryMeta = manga.status ??
+    final String secondaryMeta =
+        manga.status ??
         (manga.year != null
             ? '${manga.year}'
             : context.l10n.libraryUnknownMeta);
+    final int? effectiveReadCount =
+        readChaptersCount ?? manga.readChaptersCount;
+    final int? effectiveTotalCount =
+        totalChaptersCount ?? manga.totalChaptersCount;
+    final bool showProgress =
+        effectiveReadCount != null &&
+        effectiveTotalCount != null &&
+        effectiveTotalCount > 0;
 
     return Material(
       color: Colors.transparent,
@@ -95,6 +111,24 @@ class MangaTile extends StatelessWidget {
                             height: 1.2,
                           ),
                         ),
+                        if (showProgress) ...<Widget>[
+                          const SizedBox(height: 4),
+                          Text(
+                            context.l10n.libraryProgressValue(
+                              effectiveReadCount,
+                              effectiveTotalCount,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              color: AppColors.primary,
+                              fontFamily: AppTypography.fontFamily,
+                              fontSize: 11,
+                              fontWeight: FontWeight.w600,
+                              height: 1.2,
+                            ),
+                          ),
+                        ],
                       ],
                     ),
                   ),
@@ -105,7 +139,10 @@ class MangaTile extends StatelessWidget {
                   top: 8,
                   right: 8,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
                       color: AppColors.cardHigh,
                       borderRadius: BorderRadius.circular(8),

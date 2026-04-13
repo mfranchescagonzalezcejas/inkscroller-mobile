@@ -1,0 +1,70 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Update LAN dart defines",
+      "type": "shell",
+      "command": "./scripts/update_lan_dart_defines.sh",
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "env": {
+          "JAVA_HOME": "/home/shana1499/.jdks/jbr-17.0.14",
+          "PATH": "/home/shana1499/.jdks/jbr-17.0.14/bin:${env:PATH}"
+        }
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Run Dev LAN (auto IP script)",
+      "type": "shell",
+      "command": "./scripts/run_dev_lan.sh",
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "env": {
+          "JAVA_HOME": "/home/shana1499/.jdks/jbr-17.0.14",
+          "PATH": "/home/shana1499/.jdks/jbr-17.0.14/bin:${env:PATH}"
+        }
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Run Dev Cloud (script)",
+      "type": "shell",
+      "command": "./scripts/run_dev_cloud.sh",
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "env": {
+          "JAVA_HOME": "/home/shana1499/.jdks/jbr-17.0.14",
+          "PATH": "/home/shana1499/.jdks/jbr-17.0.14/bin:${env:PATH}"
+        }
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Run Staging Cloud (script)",
+      "type": "shell",
+      "command": "./scripts/run_staging_cloud.sh",
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "env": {
+          "JAVA_HOME": "/home/shana1499/.jdks/jbr-17.0.14",
+          "PATH": "/home/shana1499/.jdks/jbr-17.0.14/bin:${env:PATH}"
+        }
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Run Pro Cloud (script)",
+      "type": "shell",
+      "command": "./scripts/run_pro_cloud.sh",
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "env": {
+          "JAVA_HOME": "/home/shana1499/.jdks/jbr-17.0.14",
+          "PATH": "/home/shana1499/.jdks/jbr-17.0.14/bin:${env:PATH}"
+        }
+      },
+      "problemMatcher": []
+    }
+  ]
+}

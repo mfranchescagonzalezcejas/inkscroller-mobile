@@ -1,8 +1,8 @@
-# 📖 InkScroller — MGC Studio
+# 📖 InkScroller (private working repo)
 
-> Portfolio-ready Flutter manga reader focused on clean architecture, adaptive reading flows, and end-to-end product thinking.
+> Private development repository for the Flutter client of InkScroller. This is the source-of-truth workspace for ongoing implementation, architectural evolution, sprint tracking support, and internal release work.
 
-> Built and presented by **MGC Studio** — the portfolio identity of Mercedes Franchesca Gonzalez Cejas.
+> Author / brand: **MGC Studio** — Mercedes Franchesca Gonzalez Cejas
 
 ![Flutter](https://img.shields.io/badge/Flutter-3.41.5-02569B?logo=flutter&logoColor=white)
 ![FVM](https://img.shields.io/badge/FVM-managed-02569B?logo=flutter&logoColor=white)
@@ -26,7 +26,7 @@
 | **Profile** | Account info, global reading preferences (reader mode + language), sign-out |
 | **Preferences** | Local-first with SharedPreferences fallback; offline conflict resolution via timestamp comparison |
 | **Offline** | Connectivity banner on key content screens (Library, Explore, Manga Detail); preferences remain accessible when profile fetch fails |
-| **Flavors** | `dev` / `staging` / `pro` with distinct icons and flavor banners; environment endpoints are configured via run configs / `--dart-define` |
+| **Flavors** | `dev` / `staging` / `pro` with distinct icons and flavor banners; Cloud Run endpoints configured via run configs / `--dart-define` |
 
 ---
 
@@ -56,6 +56,7 @@
 - [FVM](https://fvm.app) — the project pins **Flutter 3.41.5** via `.fvmrc`
 - Android Studio or VS Code with Flutter plugin
 - Firebase project — place `google-services.json` in `android/app/src/<flavor>/`
+- Internal/local tooling may exist in this private repo and is not intended for the public showcase copy
 
 ### Install & Run
 
@@ -77,14 +78,28 @@ fvm flutter run -d <device-id> -t lib/main_dev.dart --flavor dev \
 > See [`docs/ANDROID_STUDIO_SETUP.md`](docs/ANDROID_STUDIO_SETUP.md) for shared run configs and bootstrap script.  
 > See [`docs/PHYSICAL_DEVICE.md`](docs/PHYSICAL_DEVICE.md) for physical device setup.
 
-### Important for public users
+---
 
-This repository is a **public showcase copy**.
+## 🔒 Repo role
 
-- It is meant to be readable, runnable, and portfolio-friendly.
-- Sensitive files such as Firebase config stay **local-only** and are ignored by git.
-- Some internal release/distribution automation from the private repo is intentionally excluded here.
-- `lib/firebase_options.dart` in this public repo is sanitized for showcase purposes and expects environment-injected values.
+This repository is the **private working repo**.
+
+Use it for:
+
+- active development on `develop` / feature branches
+- internal tooling and local workflows
+- full documentation and planning artifacts
+- release preparation before curating public showcase copies
+
+If you are looking for the public portfolio-facing version of the project, use the curated public repository instead of treating this repo as the showcase source.
+
+## 🪪 Brand identity
+
+**MGC Studio** is the personal brand used for portfolio-facing work and public technical presentation.
+
+- **Brand:** MGC Studio
+- **Author:** Mercedes Franchesca Gonzalez Cejas
+- **Use here:** authorship / source-of-truth development context
 
 ---
 
@@ -92,9 +107,9 @@ This repository is a **public showcase copy**.
 
 | Flavor | Entry point | Banner | Endpoint config |
 |--------|------------|--------|----------------|
-| `dev` | `main_dev.dart` | 🔴 DEV | configured per environment via run configs / `--dart-define` |
-| `staging` | `main_staging.dart` | 🟠 STAGING | configured per environment via run configs / `--dart-define` |
-| `pro` | `main_pro.dart` | none | configured per environment via run configs / `--dart-define` |
+| `dev` | `main_dev.dart` | 🔴 DEV | configured via run configs / `--dart-define` |
+| `staging` | `main_staging.dart` | 🟠 STAGING | configured via run configs / `--dart-define` |
+| `pro` | `main_pro.dart` | none | configured via run configs / `--dart-define` |
 
 Run configs (`.run/`) are committed — select `Flutter <Flavor> Physical (Cloud Run)` in Android Studio.
 
@@ -102,7 +117,7 @@ Run configs (`.run/`) are committed — select `Flutter <Flavor> Physical (Cloud
 
 ## 🏛️ Architecture
 
-**Screaming Architecture** (outer) + **Clean Architecture** (inner), implemented pragmatically for Flutter.
+**Screaming Architecture** (outer) + **Clean Architecture** (inner), applied pragmatically.
 
 - `features/` is organized by business domain — each directory screams what the app does, not what framework it uses.
 - Inside each feature, layer boundaries are enforced by convention and are currently being refined as the structure evolves: `Presentation → Domain ← Data`.
@@ -116,15 +131,6 @@ Run configs (`.run/`) are committed — select `Flutter <Flavor> Physical (Cloud
 Features: `auth` · `library` · `explore` · `home` · `preferences` · `profile` · `navigation` · `settings` · `about`
 
 > Full architecture details: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
-
-### Why this project matters
-
-This project is part of my portfolio to demonstrate:
-
-- Flutter app architecture beyond toy examples
-- feature-based organization with clear domain boundaries
-- adaptive reading UX and product-oriented thinking
-- integration between mobile client, auth, and backend APIs
 
 ---
 
@@ -176,7 +182,7 @@ fvm flutter test test/core test/features --exclude-tags ui
 
 149 tests currently passing across auth, preferences, profile, reader, router, and compliance-related flows.
 
-> Public repo includes CI checks for analyze + tests. Internal release/distribution automation remains private.
+> See [`docs/ci.md`](docs/ci.md) for CI pipeline details.
 
 ---
 
@@ -193,25 +199,13 @@ fvm flutter test test/core test/features --exclude-tags ui
 
 ---
 
-## 👩‍💻 Portfolio context
+## 🧭 Documentation model
 
-InkScroller is part of my mobile/software engineering portfolio.
+- `docs/PROJECT_STATUS.md` = live execution state
+- `docs/PRD/phase-5-*.md` = historical planning / baseline references
+- `docs/ARCHITECTURE.md` = current architectural explanation
 
-It highlights work on:
-
-- Flutter + Riverpod application structure
-- feature-based modularization
-- Firebase Auth integration
-- backend-driven reading flows
-- documentation and architectural discipline
-
-## 🪪 Brand
-
-**MGC Studio** is the public-facing identity used for portfolio presentation, technical projects, and product-oriented development work.
-
-- **Brand:** MGC Studio
-- **Author:** Mercedes Franchesca Gonzalez Cejas
-- **Focus:** mobile apps, software engineering, architecture, and product-driven builds
+When docs disagree, prefer the live repo structure plus `docs/PROJECT_STATUS.md`.
 
 ---
 

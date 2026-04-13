@@ -1,172 +1,123 @@
-# CI / CD – Firebase App Distribution
+# CI / CD
 
-This repository uses **GitHub Actions** for two different pipelines:
+This repository uses **GitHub Actions** for two pipelines:
 
 1. **CI** on `push` / `pull_request` to `develop` → runs `fvm flutter analyze` and `fvm flutter test`
-2. **CD / Firebase App Distribution** on published GitHub Releases → builds and distributes APKs
+2. **Release** on `push` of semver tag (`vX.Y.Z`) → quality gates, APK builds, GitHub Release, Firebase App Distribution
 
-The pipeline builds and distributes **three flavors**:
-- **DEV**
-- **STAGING**
-- **PRODUCTION (PRO)**
-
-It also generates **automatic release notes**, attaches APKs to the GitHub Release, and enforces basic quality checks.
+The release pipeline builds and distributes **three flavors**: DEV, STAGING, PRODUCTION (PRO).
 
 ---
 
-## 🚀 When do the workflows run?
+## When do workflows run?
 
 ### CI (`.github/workflows/ci.yml`)
 
 - On every `push` to `develop`
 - On every `pull_request` targeting `develop`
 
-### CD / Release (`.github/workflows/firebase-distribution.yml`)
+### Release (`.github/workflows/release.yml`)
 
-The release workflow is triggered **only** when a GitHub Release is published:
+Triggered automatically when a semver tag is pushed:
 
 ```text
-GitHub → Releases → Draft new release → Publish
+git tag v1.2.3
+git push origin v1.2.3
 ```
 
-It does **not** build APKs on regular pushes or pull requests.
+> Use the cross-platform release scripts — they enforce pre-flight checks before tagging.
+> See [RELEASING.md](RELEASING.md) for the full release flow.
 
 ---
 
-## 🔐 Required GitHub Secrets
+## Required GitHub Secrets
 
-The workflow depends on the following **repository secrets**:
+Go to: **Settings → Secrets and variables → Actions**
 
-Go to:
-```
-Settings → Secrets and variables → Actions
-```
+### Firebase dart-defines
 
-### 🔑 Authentication
+| Secret | Description |
+|--------|-------------|
+| `FIREBASE_DART_DEFINES_JSON` | Full contents of `.dart-defines/firebase.json` — all Firebase keys for all flavors |
 
-The release workflow authenticates Firebase App Distribution with service account JSON per flavor.
+### API Base URLs
 
-| Secret name | Description |
-|------------|-------------|
-| `FIREBASE_SERVICE_ACCOUNT_JSON_DEV` | Service account JSON for the DEV Firebase project |
-| `FIREBASE_SERVICE_ACCOUNT_JSON_STAGING` | Service account JSON for the STAGING Firebase project |
-| `FIREBASE_SERVICE_ACCOUNT_JSON_PRO` | Service account JSON for the PRO Firebase project |
-
----
-
-### 📱 Firebase App IDs
-
-Each flavor is connected to a different Firebase project.
-
-| Secret name | Description |
-|------------|-------------|
-| `FIREBASE_APP_ID_DEV` | Firebase App ID for **DEV** flavor |
-| `FIREBASE_APP_ID_STAGING` | Firebase App ID for **STAGING** flavor |
-| `FIREBASE_APP_ID_PRO` | Firebase App ID for **PRODUCTION** flavor |
-
-### 🌐 API Base URLs
-
-Because the app now reads the backend URL from `--dart-define=API_BASE_URL=...`, the release workflow also needs these secrets:
-
-| Secret name | Description |
-|------------|-------------|
+| Secret | Description |
+|--------|-------------|
 | `API_BASE_URL_DEV` | Backend base URL for DEV builds |
 | `API_BASE_URL_STAGING` | Backend base URL for STAGING builds |
 | `API_BASE_URL_PRO` | Backend base URL for PRODUCTION builds |
 
+### Firebase App Distribution
+
+| Secret | Description |
+|--------|-------------|
+| `FIREBASE_SERVICE_ACCOUNT_JSON_DEV` | Service account JSON for DEV Firebase project |
+| `FIREBASE_SERVICE_ACCOUNT_JSON_STAGING` | Service account JSON for STAGING Firebase project |
+| `FIREBASE_SERVICE_ACCOUNT_JSON_PRO` | Service account JSON for PRO Firebase project |
+| `FIREBASE_APP_ID_DEV` | Firebase App ID for DEV flavor |
+| `FIREBASE_APP_ID_STAGING` | Firebase App ID for STAGING flavor |
+| `FIREBASE_APP_ID_PRO` | Firebase App ID for PRODUCTION flavor |
+| `FIREBASE_TESTERS` | Comma-separated tester emails (no spaces) |
+
 ---
 
-### 📧 Testers
-
-| Secret name | Description |
-|------------|-------------|
-| `FIREBASE_TESTERS` | Comma-separated list of tester emails **without spaces** |
-
-Example:
-```text
-user1@gmail.com,user2@gmail.com
-```
-
----
-
-## 🧪 Quality checks performed
+## Quality gates
 
 Before distributing any build, the release workflow runs:
 
 1. `fvm flutter analyze`
 2. `fvm flutter test`
-3. Version validation (`pubspec.yaml` vs Git tag)
+3. Version validation — `pubspec.yaml` semver must match the pushed tag
 
-If any of these steps fail, **no APKs are distributed**.
+If any step fails, no APKs are distributed.
 
-The CI workflow runs the same quality gate earlier on every push/PR to `develop`.
+The CI workflow runs the same quality gate on every push/PR to `develop`.
 
 ---
 
-## 🔢 Versioning rules
-
-The workflow enforces version consistency.
-
-### Example
+## Versioning rules
 
 ```yaml
 # pubspec.yaml
-version: 0.1.0+2
+version: 1.2.3+45   # semver+build-number
 ```
 
-```text
-# Git tag
-v0.1.0
-```
-
-Rules:
-- The **semantic version** (`0.1.0`) must match the Git tag
-- The build number (`+2`) is ignored for validation
+- The **semver** (`1.2.3`) must match the tag (`v1.2.3`)
+- The **build number** (`+45`) must be incremented on every release
+- The release scripts enforce the pubspec ↔ tag match before creating the tag
 
 ---
 
-## 📝 Release notes generation
+## Release notes generation
 
-Release notes are generated automatically from Git commit messages since the **previous tag**.
-
-### Commit convention
-
-Only the following commit prefixes are used for release notes:
+Notes are generated from Git commit messages since the previous tag.
 
 | Prefix | Included in notes |
-|------|------------------|
+|--------|------------------|
 | `feat:` | ✅ New features |
 | `fix:` | ✅ Bug fixes |
-| `chore:` | ❌ Excluded |
-| `ci:` | ❌ Excluded |
+| `chore:`, `ci:`, etc. | ❌ Excluded |
 
----
-
-### Release notes per flavor
+### Per flavor
 
 | Flavor | Included commits |
-|------|-----------------|
+|--------|-----------------|
 | DEV | `feat:` + `fix:` |
 | STAGING | `fix:` only |
 | PRODUCTION | `fix:` only |
 
-> Production release notes intentionally mirror staging release notes.
-
-If no matching commits are found, a default message is used:
-
-```text
-- No user-visible changes
-```
+If no matching commits are found, the notes default to `- No user-visible changes`.
 
 ---
 
-## 📦 Build & distribution
+## Build & distribution
 
-For each release, the workflow:
+For each release the workflow:
 
-1. Builds APKs for all flavors
-2. Uploads APKs as **assets** to the GitHub Release
-3. Distributes APKs via **Firebase App Distribution**
+1. Builds APKs for all three flavors
+2. Creates a GitHub Release and attaches all APKs
+3. Distributes APKs via Firebase App Distribution
 
 Generated artifacts:
 
@@ -176,45 +127,34 @@ Generated artifacts:
 
 ---
 
-## 🛠️ Local development commands
-
-Run flavors locally:
+## Local development commands
 
 ```bash
-fvm flutter run --flavor dev -t lib/main_dev.dart
+fvm flutter run --flavor dev     -t lib/main_dev.dart
 fvm flutter run --flavor staging -t lib/main_staging.dart
-fvm flutter run --flavor pro -t lib/main_pro.dart
+fvm flutter run --flavor pro     -t lib/main_pro.dart
 ```
 
 ---
 
-## 🧠 Design decisions
+## Design decisions
 
-- Firebase authentication uses per-flavor service account JSON secrets
-- Flutter version is pinned in CI for reproducibility
-- FVM is used in workflows for consistency with local development
+- Firebase keys are injected at build time via `--dart-define-from-file` using a single `FIREBASE_DART_DEFINES_JSON` CI secret — no hardcoded keys in source
+- Release is tag-driven, not triggered by manually publishing a GitHub Release
+- Cross-platform release scripts enforce 6 pre-flight checks before tagging
+- Flutter version is pinned in CI via FVM for reproducibility
 - Release notes rely on commit conventions instead of manual input
-- Production builds are only generated via GitHub Releases
-- Release builds must pass `API_BASE_URL` explicitly so artifacts never fall back to the local LAN default
 
 ---
 
-## ✅ Checklist before creating a release
+## Checklist before releasing
 
-- [ ] `pubspec.yaml` version updated
-- [ ] Commits use `feat:` or `fix:` where appropriate
-- [ ] All GitHub secrets are configured
-- [ ] `API_BASE_URL_DEV`, `API_BASE_URL_STAGING`, and `API_BASE_URL_PRO` are configured
-- [ ] Changes merged into `develop`
+See [RELEASING.md](RELEASING.md) for the complete checklist.
 
----
+Quick summary:
 
-## 📌 Summary
-
-This CI/CD setup ensures:
-- Safe releases
-- Consistent versioning
-- Automatic changelogs
-- Controlled Firebase distribution
-
-No manual APK uploads are required.
+- [ ] `pubspec.yaml` version bumped (semver + build number)
+- [ ] All changes merged to `master`
+- [ ] `FIREBASE_DART_DEFINES_JSON` secret is up to date
+- [ ] All other secrets configured
+- [ ] Run `./scripts/release.sh X.Y.Z` (or `.ps1` on Windows)

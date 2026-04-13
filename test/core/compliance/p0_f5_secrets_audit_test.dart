@@ -9,17 +9,12 @@
 // RISK ASSESSMENT:
 //
 // 1. lib/firebase_options.dart — Firebase apiKey values (AIzaSy...)
-//    STATUS: KNOWN-SAFE / NO ACTION REQUIRED
-//    REASON: Firebase Web/Android/iOS API keys (AIzaSy prefix) are intentionally
-//    embedded in mobile apps. This is the documented Firebase pattern:
-//    https://firebase.google.com/docs/projects/api-keys
-//    These keys are NOT secret — they identify the Firebase project and are
-//    restricted by Firebase Security Rules and SHA-1 fingerprint restrictions
-//    (Android) / bundle ID restrictions (iOS) set in Firebase Console.
-//    They are equivalent to a "project ID" embedded in the binary.
-//    All three flavors (dev/staging/pro) have their own key.
-//    MITIGATION: Keys are scoped per-flavor and per-platform. Before making
-//    the repo public, rotate all keys (see SECURITY_PUBLIC_READINESS.md §2).
+//    STATUS: CLEAN — keys removed from source (TASK-028)
+//    REASON: All Firebase API keys have been replaced with
+//    String.fromEnvironment() calls. Real values are injected at build time
+//    via --dart-define-from-file=.dart-defines/firebase.json (local dev) or
+//    via GitHub Actions secrets (CI/CD). No hardcoded keys in source.
+//    See: .dart-defines/firebase.example.json for required variable names.
 //
 // 2. lib/core/config/app_environment.dart — URLs only (no secrets)
 //    STATUS: SAFE
@@ -179,25 +174,36 @@ void main() {
       });
 
       test(
-          'P0-F5: public repo keeps firebase_options.dart sanitized and env-driven',
+          'P0-F5: no hardcoded Firebase apiKeys anywhere in lib/ (TASK-028)',
           () {
-        final allFindings = scanForPattern('AIzaSy[A-Za-z0-9_-]{33}');
+        // Since TASK-028, Firebase keys are injected via String.fromEnvironment.
+        // No AIzaSy... key should appear hardcoded anywhere in source.
+        final findings = scanForPattern('AIzaSy[A-Za-z0-9_-]{33}');
 
-        expect(allFindings, isEmpty,
+        expect(findings, isEmpty,
             reason:
-                'Public showcase repo must not contain hardcoded Firebase API keys in lib/. '
-                'Found:\n${allFindings.join('\n')}');
+                'Firebase API keys must not be hardcoded in source. '
+                'Use String.fromEnvironment and .dart-defines/firebase.json.\n'
+                '${findings.join('\n')}');
+      });
 
-        final firebaseOptions =
-            File('lib/firebase_options.dart').readAsStringSync();
+      test(
+          'P0-F5: firebase_options.dart uses String.fromEnvironment for all keys',
+          () {
+        // Sanity check: firebase_options.dart must delegate to dart-define,
+        // not hardcode values. Verifies TASK-028 is in effect.
+        final findings = scanForPattern(
+          r"String\.fromEnvironment\('FIREBASE_",
+        );
 
-        expect(firebaseOptions.contains('String.fromEnvironment('), isTrue,
+        final inFirebaseOptions = findings
+            .where((f) => f.startsWith('lib/firebase_options.dart'))
+            .toList();
+
+        expect(inFirebaseOptions, isNotEmpty,
             reason:
-                'Expected lib/firebase_options.dart to use environment-injected values.');
-
-        expect(firebaseOptions.contains('REPLACE_ME'), isTrue,
-            reason:
-                'Expected placeholder defaults in sanitized firebase_options.dart.');
+                'lib/firebase_options.dart must use String.fromEnvironment '
+                'for Firebase keys. Hardcoded keys are forbidden (TASK-028).');
       });
     });
 

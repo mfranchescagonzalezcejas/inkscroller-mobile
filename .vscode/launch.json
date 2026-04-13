@@ -2,46 +2,185 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "InkScroller • DEV Emulator",
+      "name": "Inkscroller • Dev Emulator",
       "request": "launch",
       "type": "dart",
       "program": "lib/main_dev.dart",
-      "args": ["--flavor", "dev", "--dart-define=API_BASE_URL=http://10.0.2.2:8000", "--dart-define=API_FALLBACK_URL=http://127.0.0.1:8000"]
+      "env": {
+        "JAVA_HOME": "/home/shana1499/.jdks/jbr-17.0.14",
+        "PATH": "/home/shana1499/.jdks/jbr-17.0.14/bin:${env:PATH}"
+      },
+      "toolArgs": [
+        "--flavor",
+        "dev",
+        "--dart-define=API_BASE_URL=http://10.0.2.2:8000",
+        "--dart-define=API_FALLBACK_URL=http://127.0.0.1:8000",
+        "--dart-define-from-file=.dart-defines/firebase.json"
+      ]
     },
     {
-      "name": "InkScroller • STAGING Emulator",
-      "request": "launch",
-      "type": "dart",
-      "program": "lib/main_staging.dart",
-      "args": ["--flavor", "staging", "--dart-define=API_BASE_URL=http://10.0.2.2:8000", "--dart-define=API_FALLBACK_URL=http://127.0.0.1:8000"]
-    },
-    {
-      "name": "InkScroller • PROD Emulator",
-      "request": "launch",
-      "type": "dart",
-      "program": "lib/main_pro.dart",
-      "args": ["--flavor", "pro", "--dart-define=API_BASE_URL=http://10.0.2.2:8000", "--dart-define=API_FALLBACK_URL=http://127.0.0.1:8000"]
-    },
-    {
-      "name": "InkScroller • DEV Cloud",
+      "name": "Inkscroller • Dev Local",
       "request": "launch",
       "type": "dart",
       "program": "lib/main_dev.dart",
-      "args": ["--flavor", "dev", "--dart-define=API_BASE_URL=https://inkscroller-backend-708894048002.us-central1.run.app"]
+      "env": {
+        "JAVA_HOME": "/home/shana1499/.jdks/jbr-17.0.14",
+        "PATH": "/home/shana1499/.jdks/jbr-17.0.14/bin:${env:PATH}"
+      },
+      "toolArgs": [
+        "--flavor",
+        "dev",
+        "--dart-define=API_BASE_URL=http://127.0.0.1:8000",
+        "--dart-define-from-file=.dart-defines/firebase.json"
+      ]
     },
     {
-      "name": "InkScroller • STAGING Cloud",
+      "name": "Inkscroller • Dev Physical",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main_dev.dart",
+      "env": {
+        "JAVA_HOME": "/home/shana1499/.jdks/jbr-17.0.14",
+        "PATH": "/home/shana1499/.jdks/jbr-17.0.14/bin:${env:PATH}"
+      },
+      "toolArgs": [
+        "--flavor",
+        "dev",
+        "--dart-define=API_BASE_URL=http://192.168.1.38:8000",
+        "--dart-define-from-file=.dart-defines/firebase.json"
+      ]
+    },
+    {
+      "name": "Inkscroller • Dev Physical (Cloud Run)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main_dev.dart",
+      "env": {
+        "JAVA_HOME": "/home/shana1499/.jdks/jbr-17.0.14",
+        "PATH": "/home/shana1499/.jdks/jbr-17.0.14/bin:${env:PATH}"
+      },
+      "toolArgs": [
+        "--flavor",
+        "dev",
+        "--dart-define=API_BASE_URL=https://inkscroller-backend-708894048002.us-central1.run.app",
+        "--dart-define-from-file=.dart-defines/firebase.json"
+      ]
+    },
+    {
+      "name": "Inkscroller • Dev LAN",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main_dev.dart",
+      "preLaunchTask": "Update LAN dart defines",
+      "env": {
+        "JAVA_HOME": "/home/shana1499/.jdks/jbr-17.0.14",
+        "PATH": "/home/shana1499/.jdks/jbr-17.0.14/bin:${env:PATH}"
+      },
+      "toolArgs": [
+        "--flavor",
+        "dev",
+        "--dart-define-from-file=.dart-defines/lan.auto.json",
+        "--dart-define-from-file=.dart-defines/firebase.json",
+        "--device-timeout=30"
+      ]
+    },
+    {
+      "name": "Inkscroller • Staging Emulator",
       "request": "launch",
       "type": "dart",
       "program": "lib/main_staging.dart",
-      "args": ["--flavor", "staging", "--dart-define=API_BASE_URL=https://inkscroller-backend-391760656950.us-central1.run.app"]
+      "env": {
+        "JAVA_HOME": "/home/shana1499/.jdks/jbr-17.0.14",
+        "PATH": "/home/shana1499/.jdks/jbr-17.0.14/bin:${env:PATH}"
+      },
+      "toolArgs": [
+        "--flavor",
+        "staging",
+        "--dart-define=API_BASE_URL=http://10.0.2.2:8000",
+        "--dart-define=API_FALLBACK_URL=http://127.0.0.1:8000",
+        "--dart-define-from-file=.dart-defines/firebase.json"
+      ]
     },
     {
-      "name": "InkScroller • PROD Cloud",
+      "name": "Inkscroller • Staging Physical (Local)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main_staging.dart",
+      "env": {
+        "JAVA_HOME": "/home/shana1499/.jdks/jbr-17.0.14",
+        "PATH": "/home/shana1499/.jdks/jbr-17.0.14/bin:${env:PATH}"
+      },
+      "toolArgs": [
+        "--flavor",
+        "staging",
+        "--dart-define=API_BASE_URL=http://192.168.1.38:8000",
+        "--dart-define-from-file=.dart-defines/firebase.json"
+      ]
+    },
+    {
+      "name": "Inkscroller • Staging Physical (Cloud Run)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main_staging.dart",
+      "env": {
+        "JAVA_HOME": "/home/shana1499/.jdks/jbr-17.0.14",
+        "PATH": "/home/shana1499/.jdks/jbr-17.0.14/bin:${env:PATH}"
+      },
+      "toolArgs": [
+        "--flavor",
+        "staging",
+        "--dart-define=API_BASE_URL=https://inkscroller-backend-391760656950.us-central1.run.app",
+        "--dart-define-from-file=.dart-defines/firebase.json"
+      ]
+    },
+    {
+      "name": "Inkscroller • Pro Emulator",
       "request": "launch",
       "type": "dart",
       "program": "lib/main_pro.dart",
-      "args": ["--flavor", "pro", "--dart-define=API_BASE_URL=https://inkscroller-backend-806863502436.us-central1.run.app"]
+      "env": {
+        "JAVA_HOME": "/home/shana1499/.jdks/jbr-17.0.14",
+        "PATH": "/home/shana1499/.jdks/jbr-17.0.14/bin:${env:PATH}"
+      },
+      "toolArgs": [
+        "--flavor",
+        "pro",
+        "--dart-define=API_BASE_URL=http://10.0.2.2:8000",
+        "--dart-define=API_FALLBACK_URL=http://127.0.0.1:8000",
+        "--dart-define-from-file=.dart-defines/firebase.json"
+      ]
+    },
+    {
+      "name": "Inkscroller • Pro Physical (Local)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main_pro.dart",
+      "env": {
+        "JAVA_HOME": "/home/shana1499/.jdks/jbr-17.0.14",
+        "PATH": "/home/shana1499/.jdks/jbr-17.0.14/bin:${env:PATH}"
+      },
+      "toolArgs": [
+        "--flavor",
+        "pro",
+        "--dart-define=API_BASE_URL=http://192.168.1.38:8000",
+        "--dart-define-from-file=.dart-defines/firebase.json"
+      ]
+    },
+    {
+      "name": "Inkscroller • Pro Physical (Cloud Run)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main_pro.dart",
+      "env": {
+        "JAVA_HOME": "/home/shana1499/.jdks/jbr-17.0.14",
+        "PATH": "/home/shana1499/.jdks/jbr-17.0.14/bin:${env:PATH}"
+      },
+      "toolArgs": [
+        "--flavor",
+        "pro",
+        "--dart-define=API_BASE_URL=https://inkscroller-backend-806863502436.us-central1.run.app",
+        "--dart-define-from-file=.dart-defines/firebase.json"
+      ]
     }
   ]
 }

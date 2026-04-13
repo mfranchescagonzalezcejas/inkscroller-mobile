@@ -2,7 +2,7 @@
   <configuration default="false" name="Flutter Dev LAN" type="FlutterRunConfigurationType" factoryName="Flutter">
     <option name="filePath" value="$PROJECT_DIR$/lib/main_dev.dart" />
     <option name="buildFlavor" value="dev" />
-    <option name="additionalArgs" value="--dart-define-from-file=$PROJECT_DIR$/.dart-defines/lan.auto.json --device-timeout=30" />
+    <option name="additionalArgs" value="--dart-define-from-file=$PROJECT_DIR$/.dart-defines/lan.auto.json --dart-define-from-file=$PROJECT_DIR$/.dart-defines/firebase.json --device-timeout=30" />
     <method v="2" />
   </configuration>
 

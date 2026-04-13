@@ -86,9 +86,30 @@ void main() {
       ),
     );
 
-    expect(find.text('Capítulo 3.0'), findsOneWidget);
+    expect(find.text('Capítulo 3'), findsOneWidget);
     expect(find.text('Awakening'), findsOneWidget);
     expect(find.byIcon(Icons.menu_book), findsOneWidget);
+  });
+
+  testWidgets('MangaTile shows reading progress when available', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        locale: const Locale('es'),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: Scaffold(
+          body: MangaTile(
+            manga: Manga(id: 'manga-progress', title: 'Progress Manga'),
+            readChaptersCount: 4,
+            totalChaptersCount: 10,
+          ),
+        ),
+      ),
+    );
+
+    expect(find.text('4 / 10 leídos'), findsOneWidget);
   });
 
   testWidgets('ChapterTile shows extra label and external icon', (

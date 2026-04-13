@@ -47,8 +47,10 @@ app.*.map.json
 # FVM (Flutter Version Management)
 .fvm/
 
-# Local generated dart-define files
-.dart-defines/
+# Local generated dart-define files (real values — never commit)
+# Use *.example.json for committed templates
+.dart-defines/*
+!.dart-defines/*.example.json
 
 # Local QA smoke evidence outputs
 .qa-evidence/
@@ -72,7 +74,6 @@ android/app/src/staging/google-services.json
 android/app/src/pro/google-services.json
 android/app/google-services.json
 ios/Runner/GoogleService-Info*.plist
-ios/config/**/GoogleService-Info.plist
 
 # Android signing
 android/*.jks

@@ -7,12 +7,19 @@ import 'package:inkscroller_flutter/core/widgets/offline_banner.dart';
 import 'package:inkscroller_flutter/features/library/presentation/widgets/cover_image.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../../../core/design/design_tokens.dart' show AppColors, AppSpacing, AppTypography;
+import '../../../../core/design/design_tokens.dart'
+    show AppColors, AppSpacing, AppTypography;
+import '../../../../core/feedback/app_feedback.dart';
 import '../../../preferences/presentation/providers/preferences_provider.dart';
+import '../../domain/chapter_progress_utils.dart';
+import '../../domain/entities/chapter.dart';
 import '../../domain/entities/manga.dart';
+import '../../domain/entities/manga_reading_progress.dart';
 import '../../domain/entities/reader_mode.dart';
 import '../providers/chapters/manga_chapter_provider.dart';
 import '../providers/per_title_override_provider.dart';
+import '../providers/reading_progress_provider.dart';
+import '../providers/user_library_provider.dart';
 import '../widgets/chapter_tile.dart';
 import '../widgets/manga_detail_shimmer.dart';
 
@@ -30,6 +37,7 @@ class MangaDetailPage extends ConsumerStatefulWidget {
 
 class _MangaDetailPageState extends ConsumerState<MangaDetailPage> {
   bool _preferencesRequested = false;
+  String? _lastSyncedChapterSignature;
 
   @override
   void initState() {
@@ -47,9 +55,29 @@ class _MangaDetailPageState extends ConsumerState<MangaDetailPage> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(mangaChaptersProvider);
+    final progress = ref.watch(
+      readingProgressProvider.select(
+        (value) =>
+            value[widget.manga.id] ??
+            MangaReadingProgress(mangaId: widget.manga.id),
+      ),
+    );
     final bool isOffline = ref
         .watch(connectivityStatusProvider)
         .maybeWhen(data: (isOnline) => !isOnline, orElse: () => false);
+
+    final String chapterSignature = state.chapters
+        .map((chapter) => chapter.id)
+        .join('|');
+    if (state.chapters.isNotEmpty &&
+        _lastSyncedChapterSignature != chapterSignature) {
+      _lastSyncedChapterSignature = chapterSignature;
+      Future.microtask(
+        () => ref
+            .read(readingProgressProvider.notifier)
+            .syncChapters(widget.manga.id, state.chapters),
+      );
+    }
 
     return Scaffold(
       backgroundColor: AppColors.voidLowest,
@@ -70,19 +98,21 @@ class _MangaDetailPageState extends ConsumerState<MangaDetailPage> {
                 SliverToBoxAdapter(child: _TitleArea(manga: widget.manga)),
 
                 // ── CTA button ────────────────────────────────────
-                SliverToBoxAdapter(child: _CtaButton(
-                  label: context.l10n.readNow.toUpperCase(),
-                  onTap: () {
-                    final chapters = ref.read(mangaChaptersProvider).chapters;
-                    if (chapters.isNotEmpty) {
-                      final first = chapters.first;
-                      context.push(
-                        '/manga/${widget.manga.id}/chapter/${first.id}',
-                        extra: first,
-                      );
-                    }
-                  },
-                )),
+                SliverToBoxAdapter(
+                  child: _CtaButton(
+                    label: context.l10n.readNow.toUpperCase(),
+                    onTap: () {
+                      final chapters = ref.read(mangaChaptersProvider).chapters;
+                      if (chapters.isNotEmpty) {
+                        final first = chapters.first;
+                        context.push(
+                          '/manga/${widget.manga.id}/chapter/${first.id}',
+                          extra: first,
+                        );
+                      }
+                    },
+                  ),
+                ),
 
                 // ── Actions row ───────────────────────────────────
                 const SliverToBoxAdapter(child: _ActionsRow()),
@@ -101,6 +131,7 @@ class _MangaDetailPageState extends ConsumerState<MangaDetailPage> {
                     padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
                     child: _ChaptersHeader(
                       count: state.chapters.length,
+                      progress: progress,
                     ),
                   ),
                 ),
@@ -153,42 +184,28 @@ class _MangaDetailPageState extends ConsumerState<MangaDetailPage> {
                     child: Center(
                       child: Text(
                         context.l10n.noChaptersAvailable,
-                        style: const TextStyle(color: AppColors.onSurfaceVariant),
+                        style: const TextStyle(
+                          color: AppColors.onSurfaceVariant,
+                        ),
                       ),
                     ),
                   )
                 else
                   SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                        final chapter = state.chapters[index];
-                        return ChapterTile(
-                          chapter: chapter,
-                          onTap: () async {
-                            if (chapter.external && chapter.externalUrl != null) {
-                              final uri = Uri.parse(chapter.externalUrl!);
-                              if (await canLaunchUrl(uri)) {
-                                await launchUrl(
-                                  uri,
-                                  mode: LaunchMode.externalApplication,
-                                );
-                              }
-                            } else if (chapter.external) {
-                              await context.push(
-                                '/manga/${widget.manga.id}/chapter/${chapter.id}',
-                                extra: chapter,
-                              );
-                            } else if (chapter.readable) {
-                              await context.push(
-                                '/manga/${widget.manga.id}/chapter/${chapter.id}',
-                                extra: chapter,
-                              );
-                            }
-                          },
-                        );
-                      },
-                      childCount: state.chapters.length,
-                    ),
+                    delegate: SliverChildBuilderDelegate((context, index) {
+                      final chapter = state.chapters[index];
+                      return ChapterTile(
+                        chapter: chapter,
+                        isRead: progress.isChapterRead(chapter.id),
+                        onTap: () async {
+                          await _handleChapterTap(
+                            context,
+                            chapter,
+                            state.chapters,
+                          );
+                        },
+                      );
+                    }, childCount: state.chapters.length),
                   ),
 
                 // safe bottom padding for floating nav
@@ -200,11 +217,144 @@ class _MangaDetailPageState extends ConsumerState<MangaDetailPage> {
       ),
     );
   }
+
+  Future<void> _handleChapterTap(
+    BuildContext context,
+    Chapter chapter,
+    List<Chapter> chapters,
+  ) async {
+    final int unreadCount = ref
+        .read(readingProgressProvider.notifier)
+        .unreadCountThrough(
+          mangaId: widget.manga.id,
+          chapters: chapters.cast(),
+          targetChapterId: chapter.id,
+        );
+
+    if (unreadCount > 1 || (chapter.external && unreadCount > 0)) {
+      final bool shouldMark =
+          await _showMarkProgressDialog(context, chapter, unreadCount) ?? false;
+      if (!context.mounted) {
+        return;
+      }
+
+      if (shouldMark) {
+        await _markThroughAndOfferUndo(context, chapter.id, chapters);
+      } else if (chapter.external) {
+        await _openExternalChapter(context, chapter);
+        return;
+      }
+    } else if (unreadCount == 1) {
+      await _markThroughAndOfferUndo(context, chapter.id, chapters);
+    }
+
+    if (!context.mounted) {
+      return;
+    }
+
+    if (chapter.external) {
+      await _openExternalChapter(context, chapter);
+      return;
+    }
+
+    if (chapter.readable) {
+      await context.push(
+        '/manga/${widget.manga.id}/chapter/${chapter.id}',
+        extra: chapter,
+      );
+    }
+  }
+
+  Future<bool?> _showMarkProgressDialog(
+    BuildContext context,
+    Chapter chapter,
+    int unreadCount,
+  ) {
+    final String chapterLabel = chapter.number == null
+        ? context.l10n.extraLabel
+        : context.l10n.chapterLabel(formatChapterNumber(chapter.number!));
+
+    return showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(context.l10n.readingProgressDialogTitle),
+        content: Text(
+          chapter.external
+              ? context.l10n.readingProgressDialogExternalMessage(
+                  unreadCount,
+                  chapterLabel,
+                )
+              : context.l10n.readingProgressDialogMessage(
+                  unreadCount,
+                  chapterLabel,
+                ),
+        ),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(
+              chapter.external
+                  ? context.l10n.readingProgressOpenOnlyAction
+                  : context.l10n.externalChapterGoBackAction,
+            ),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(context.l10n.readingProgressConfirmAction),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _markThroughAndOfferUndo(
+    BuildContext context,
+    String targetChapterId,
+    List<Chapter> chapters,
+  ) async {
+    final previous = await ref
+        .read(readingProgressProvider.notifier)
+        .markThrough(
+          mangaId: widget.manga.id,
+          chapters: chapters,
+          targetChapterId: targetChapterId,
+        );
+    if (previous == null || !context.mounted) {
+      return;
+    }
+
+    AppFeedback.showUndo(
+      context,
+      title: context.l10n.readingProgressUpdatedMessage,
+      onUndo: () {
+        ref.read(readingProgressProvider.notifier).restore(previous);
+      },
+    );
+  }
+
+  Future<void> _openExternalChapter(
+    BuildContext context,
+    Chapter chapter,
+  ) async {
+    final String? externalUrl = chapter.externalUrl;
+    if (externalUrl == null || externalUrl.isEmpty) {
+      await context.push(
+        '/manga/${widget.manga.id}/chapter/${chapter.id}',
+        extra: chapter,
+      );
+      return;
+    }
+
+    final uri = Uri.parse(externalUrl);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    }
+  }
 }
 
 // ── TopBar ────────────────────────────────────────────────────────────────────
 
-class _DetailTopBar extends StatelessWidget implements PreferredSizeWidget {
+class _DetailTopBar extends ConsumerWidget implements PreferredSizeWidget {
   final Manga manga;
 
   const _DetailTopBar({required this.manga});
@@ -213,14 +363,24 @@ class _DetailTopBar extends StatelessWidget implements PreferredSizeWidget {
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final bool isInLibrary = ref.watch(
+      userLibraryProvider.select(
+        (value) => value[manga.id]?.isInLibrary ?? false,
+      ),
+    );
+
     return AppBar(
       backgroundColor: AppColors.stage,
       elevation: 0,
       scrolledUnderElevation: 0,
       leading: IconButton(
         onPressed: () => context.pop(),
-        icon: const Icon(Icons.arrow_back, color: AppColors.onSurface, size: 24),
+        icon: const Icon(
+          Icons.arrow_back,
+          color: AppColors.onSurface,
+          size: 24,
+        ),
       ),
       title: Text(
         manga.title,
@@ -235,8 +395,31 @@ class _DetailTopBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       actions: <Widget>[
         IconButton(
-          onPressed: () {},
-          icon: const Icon(Icons.bookmark_border, color: AppColors.onSurface, size: 24),
+          onPressed: () async {
+            final bool nowInLibrary = await ref
+                .read(userLibraryProvider.notifier)
+                .toggle(manga);
+            if (!context.mounted) {
+              return;
+            }
+
+            if (nowInLibrary) {
+              AppFeedback.showSuccess(
+                context,
+                title: context.l10n.libraryItemAdded(manga.title),
+              );
+            } else {
+              AppFeedback.showInfo(
+                context,
+                title: context.l10n.libraryItemRemoved(manga.title),
+              );
+            }
+          },
+          icon: Icon(
+            isInLibrary ? Icons.bookmark : Icons.bookmark_border,
+            color: AppColors.onSurface,
+            size: 24,
+          ),
         ),
       ],
     );
@@ -361,7 +544,9 @@ class _Tag extends StatelessWidget {
               fontFamily: AppTypography.fontFamily,
               fontSize: 11,
               fontWeight: isStatus ? FontWeight.w600 : FontWeight.w400,
-              color: isStatus ? AppColors.onSurface : AppColors.onSurfaceVariant,
+              color: isStatus
+                  ? AppColors.onSurface
+                  : AppColors.onSurfaceVariant,
             ),
           ),
         ],
@@ -506,22 +691,45 @@ class _ActionBtn extends StatelessWidget {
 
 class _ChaptersHeader extends StatelessWidget {
   final int count;
+  final MangaReadingProgress progress;
 
-  const _ChaptersHeader({required this.count});
+  const _ChaptersHeader({required this.count, required this.progress});
 
   @override
   Widget build(BuildContext context) {
+    final int total = progress.hasKnownTotal
+        ? progress.totalChaptersCount
+        : count;
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
-        Text(
-          context.l10n.chaptersTitle,
-          style: const TextStyle(
-            fontFamily: AppTypography.fontFamily,
-            fontSize: 18,
-            fontWeight: FontWeight.w700,
-            color: AppColors.onSurface,
-          ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              context.l10n.chaptersTitle,
+              style: const TextStyle(
+                fontFamily: AppTypography.fontFamily,
+                fontSize: 18,
+                fontWeight: FontWeight.w700,
+                color: AppColors.onSurface,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              context.l10n.libraryProgressValue(
+                progress.readChaptersCount,
+                total,
+              ),
+              style: const TextStyle(
+                fontFamily: AppTypography.fontFamily,
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: AppColors.primary,
+              ),
+            ),
+          ],
         ),
         const Icon(Icons.tune, color: Color(0xFF889391), size: 22),
       ],
@@ -553,8 +761,9 @@ class _ReaderModeOverride extends ConsumerWidget {
       final otherMode = globalMode == ReaderMode.vertical
           ? ReaderMode.paged
           : ReaderMode.vertical;
-      final otherLabel =
-          globalMode == ReaderMode.vertical ? 'Paginado' : 'Vertical';
+      final otherLabel = globalMode == ReaderMode.vertical
+          ? 'Paginado'
+          : 'Vertical';
       final globalLabel =
           'Tu preferencia: ${globalMode == ReaderMode.vertical ? "Vertical" : "Paginado"}';
 
@@ -592,7 +801,11 @@ class _ReaderModeOverride extends ConsumerWidget {
   }) {
     return Row(
       children: <Widget>[
-        const Icon(Icons.bookmark_border, size: 20, color: AppColors.onSurfaceVariant),
+        const Icon(
+          Icons.bookmark_border,
+          size: 20,
+          color: AppColors.onSurfaceVariant,
+        ),
         const SizedBox(width: AppSpacing.sm),
         Expanded(
           child: DropdownButtonFormField<ReaderMode?>(

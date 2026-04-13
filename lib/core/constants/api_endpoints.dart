@@ -12,4 +12,5 @@ class ApiEndpoints {
   // ── User / Auth (Phase 5) ─────────────────────────────────────────────────
   static const usersMe = '/users/me';
   static const usersMePreferences = '/users/me/preferences';
+  static const usersMeLibrary = '/users/me/library';
 }

@@ -15,6 +15,7 @@ class AppTheme {
   static const _darkBg = Color(0xFF0B1220);
   static const _darkSurface = Color(0xFF111A2E);
   static const _darkDivider = Color(0xFF1F2A44);
+  static const _darkText = Color(0xFFE2E4E6);
   static const _darkTextSecondary = Color(0xFFAAB4C8);
 
   // ☀️ Light colors
@@ -79,6 +80,28 @@ class AppTheme {
       dividerTheme: const DividerThemeData(color: _lightDivider, thickness: 1),
 
       iconTheme: const IconThemeData(color: _bluePrimary),
+
+      snackBarTheme: SnackBarThemeData(
+        backgroundColor: _darkSurface,
+        contentTextStyle: const TextStyle(color: _darkText),
+        actionTextColor: _bluePrimary,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      ),
+
+      dialogTheme: DialogThemeData(
+        backgroundColor: _darkSurface,
+        titleTextStyle: const TextStyle(
+          color: _darkText,
+          fontSize: 18,
+          fontWeight: FontWeight.w600,
+        ),
+        contentTextStyle: const TextStyle(
+          color: _darkTextSecondary,
+          fontSize: 14,
+        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      ),
     );
   }
 

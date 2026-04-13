@@ -5,6 +5,7 @@ import '../../../../core/config/api_config.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/design/design_tokens.dart'
     show AppColors, AppTypography;
+import '../../../../core/feedback/app_feedback.dart';
 import '../../../../core/l10n/l10n.dart';
 import '../../../../flavors/flavor_config.dart';
 import '../providers/settings_cache_controller.dart';
@@ -35,11 +36,13 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     ref.invalidate(cacheSizeProvider);
 
     result.fold(
-      (failure) => ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.settingsCacheClearFailedMessage)),
+      (failure) => AppFeedback.showError(
+        context,
+        title: context.l10n.settingsCacheClearFailedMessage,
       ),
-      (_) => ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.settingsCacheClearedMessage)),
+      (_) => AppFeedback.showSuccess(
+        context,
+        title: context.l10n.settingsCacheClearedMessage,
       ),
     );
 

@@ -374,6 +374,24 @@ abstract class AppLocalizations {
   /// **'Add to Library'**
   String get addToLibrary;
 
+  /// No description provided for @removeFromLibrary.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from Library'**
+  String get removeFromLibrary;
+
+  /// No description provided for @libraryItemAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'{title} added to your library'**
+  String libraryItemAdded(Object title);
+
+  /// No description provided for @libraryItemRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'{title} removed from your library'**
+  String libraryItemRemoved(Object title);
+
   /// No description provided for @genreAll.
   ///
   /// In en, this message translates to:
@@ -434,11 +452,53 @@ abstract class AppLocalizations {
   /// **'On Hold'**
   String get libraryTabOnHold;
 
+  /// No description provided for @libraryEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Your library is empty. Add manga from Home or Manga Detail.'**
+  String get libraryEmpty;
+
+  /// No description provided for @libraryEmptyTab.
+  ///
+  /// In en, this message translates to:
+  /// **'No manga in this tab yet.'**
+  String get libraryEmptyTab;
+
+  /// No description provided for @libraryStatusReading.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark as Reading'**
+  String get libraryStatusReading;
+
+  /// No description provided for @libraryStatusCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark as Completed'**
+  String get libraryStatusCompleted;
+
+  /// No description provided for @libraryStatusPaused.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark as Paused'**
+  String get libraryStatusPaused;
+
+  /// No description provided for @libraryStatusUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Library status updated'**
+  String get libraryStatusUpdated;
+
   /// No description provided for @libraryUnknownMeta.
   ///
   /// In en, this message translates to:
   /// **'Unknown'**
   String get libraryUnknownMeta;
+
+  /// No description provided for @libraryProgressValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{readCount} / {totalCount} read'**
+  String libraryProgressValue(int readCount, int totalCount);
 
   /// No description provided for @exploreTitle.
   ///
@@ -475,6 +535,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Go back'**
   String get externalChapterGoBackAction;
+
+  /// No description provided for @readingProgressDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Update reading progress'**
+  String get readingProgressDialogTitle;
+
+  /// No description provided for @readingProgressDialogMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This will mark {count} chapters up to {chapterLabel} as read.'**
+  String readingProgressDialogMessage(int count, Object chapterLabel);
+
+  /// No description provided for @readingProgressDialogExternalMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This chapter opens outside InkScroller. Do you want to mark {count} chapters up to {chapterLabel} before leaving?'**
+  String readingProgressDialogExternalMessage(int count, Object chapterLabel);
+
+  /// No description provided for @readingProgressConfirmAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark as read'**
+  String get readingProgressConfirmAction;
+
+  /// No description provided for @readingProgressOpenOnlyAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Open without marking'**
+  String get readingProgressOpenOnlyAction;
+
+  /// No description provided for @readingProgressUndoAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Undo'**
+  String get readingProgressUndoAction;
+
+  /// No description provided for @readingProgressUpdatedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading progress updated'**
+  String get readingProgressUpdatedMessage;
 
   /// No description provided for @navHome.
   ///
@@ -631,6 +733,156 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Version {version} (Build {buildNumber})'**
   String profileVersionLabel(Object version, Object buildNumber);
+
+  /// No description provided for @authSignInTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in'**
+  String get authSignInTitle;
+
+  /// No description provided for @authSignInSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your manga collection awaits'**
+  String get authSignInSubtitle;
+
+  /// No description provided for @authEmailLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get authEmailLabel;
+
+  /// No description provided for @authPasswordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get authPasswordLabel;
+
+  /// No description provided for @authSignInButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in'**
+  String get authSignInButton;
+
+  /// No description provided for @authNoAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t have an account? Create one'**
+  String get authNoAccount;
+
+  /// No description provided for @authContinueAsGuest.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue as guest'**
+  String get authContinueAsGuest;
+
+  /// No description provided for @authEmailRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your email.'**
+  String get authEmailRequired;
+
+  /// No description provided for @authEmailInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid email.'**
+  String get authEmailInvalid;
+
+  /// No description provided for @authPasswordRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your password.'**
+  String get authPasswordRequired;
+
+  /// No description provided for @authPasswordTooShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Password must be at least 6 characters.'**
+  String get authPasswordTooShort;
+
+  /// No description provided for @authCreateAccountTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create account'**
+  String get authCreateAccountTitle;
+
+  /// No description provided for @authCreateAccountSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Join the collection'**
+  String get authCreateAccountSubtitle;
+
+  /// No description provided for @authCreateAccountButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Create account'**
+  String get authCreateAccountButton;
+
+  /// No description provided for @authHaveAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Already have an account? Sign in'**
+  String get authHaveAccount;
+
+  /// No description provided for @readerSettingsDirection.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading direction'**
+  String get readerSettingsDirection;
+
+  /// No description provided for @readerSettingsBrightness.
+  ///
+  /// In en, this message translates to:
+  /// **'Brightness'**
+  String get readerSettingsBrightness;
+
+  /// No description provided for @readerSettingsAmoled.
+  ///
+  /// In en, this message translates to:
+  /// **'AMOLED Black'**
+  String get readerSettingsAmoled;
+
+  /// No description provided for @readerSettingsAmoledSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Save battery on OLED screens'**
+  String get readerSettingsAmoledSubtitle;
+
+  /// No description provided for @readerSettingsImmersive.
+  ///
+  /// In en, this message translates to:
+  /// **'Immersive mode'**
+  String get readerSettingsImmersive;
+
+  /// No description provided for @readerSettingsImmersiveSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide system navigation bars'**
+  String get readerSettingsImmersiveSubtitle;
+
+  /// No description provided for @readerSettingsConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm settings'**
+  String get readerSettingsConfirm;
+
+  /// No description provided for @readerDirectionLtr.
+  ///
+  /// In en, this message translates to:
+  /// **'LTR'**
+  String get readerDirectionLtr;
+
+  /// No description provided for @readerDirectionRtl.
+  ///
+  /// In en, this message translates to:
+  /// **'RTL'**
+  String get readerDirectionRtl;
+
+  /// No description provided for @readerDirectionVertical.
+  ///
+  /// In en, this message translates to:
+  /// **'Vertical'**
+  String get readerDirectionVertical;
 }
 
 class _AppLocalizationsDelegate

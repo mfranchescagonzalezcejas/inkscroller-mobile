@@ -1,8 +1,10 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/design/design_tokens.dart';
+import '../../../../core/feedback/app_feedback.dart';
 import '../../../../core/l10n/l10n.dart';
 import '../../../../core/widgets/app_top_bar.dart';
 import '../../../auth/presentation/providers/auth_provider.dart';
@@ -15,6 +17,7 @@ import '../../../library/presentation/providers/library/library_provider.dart';
 import '../../../library/presentation/providers/library/library_notifier.dart';
 import '../../../library/presentation/widgets/manga_tile.dart';
 import '../../../library/presentation/widgets/library_shimmer.dart';
+import '../../../library/presentation/providers/user_library_provider.dart';
 import '../../../library/domain/entities/manga.dart';
 
 /// Landing page with curated manga sections: Featured, Latest, Popular, and Demographics.
@@ -24,11 +27,65 @@ import '../../../library/domain/entities/manga.dart';
 class HomePage extends ConsumerWidget {
   const HomePage({super.key});
 
+  // Warms up Image.network images (hero + trending cards) and
+  // CachedNetworkImage images (demographic carousels) as soon as data arrives,
+  // so the user never sees a blank frame when they scroll.
+  static void _precacheMangaCovers(BuildContext context, HomeState state) {
+    if (!context.mounted) return;
+
+    // Hero and trending cards use Image.network → NetworkImage provider.
+    final networkUrls = [
+      ...state.featured,
+      ...state.latest.take(10),
+      ...state.popular.take(10),
+    ].map((m) => m.coverUrl).whereType<String>().where((u) => u.isNotEmpty);
+
+    for (final url in networkUrls) {
+      precacheImage(NetworkImage(url), context);
+    }
+
+    // Demographic carousels use CoverImage → CachedNetworkImage.
+    final cachedUrls = [
+      ...state.shounen.take(8),
+      ...state.shoujo.take(8),
+      ...state.seinen.take(8),
+      ...state.josei.take(8),
+    ].map((m) => m.coverUrl).whereType<String>().where((u) => u.isNotEmpty);
+
+    for (final url in cachedUrls) {
+      precacheImage(CachedNetworkImageProvider(url), context);
+    }
+  }
+
+  static void _precacheChapterCovers(
+    BuildContext context,
+    List<HomeChapter> chapters,
+  ) {
+    if (!context.mounted) return;
+    for (final chapter in chapters) {
+      final url = chapter.mangaCoverUrl;
+      if (url != null && url.isNotEmpty) {
+        precacheImage(NetworkImage(url), context);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final libraryState = ref.watch(libraryProvider);
     final homeState = ref.watch(homeProvider);
     final authState = ref.watch(authProvider);
+
+    ref.listen<HomeState>(homeProvider, (_, next) {
+      if (next.featured.isNotEmpty) _precacheMangaCovers(context, next);
+    });
+
+    ref.listen<AsyncValue<List<HomeChapter>>>(
+      homeLatestChaptersProvider,
+      (_, next) => next.whenData(
+        (chapters) => _precacheChapterCovers(context, chapters),
+      ),
+    );
 
     return Scaffold(
       backgroundColor: AppColors.voidLowest,
@@ -90,17 +147,22 @@ class _HomeBody extends StatelessWidget {
   }
 }
 
-class _HeroSection extends StatelessWidget {
+class _HeroSection extends ConsumerWidget {
   final List<Manga> mangas;
 
   const _HeroSection({required this.mangas});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     if (mangas.isEmpty) return const SizedBox.shrink();
 
     // Show first manga as hero
     final heroManga = mangas.first;
+    final bool isInLibrary = ref.watch(
+      userLibraryProvider.select(
+        (value) => value[heroManga.id]?.isInLibrary ?? false,
+      ),
+    );
     final coverUrl = heroManga.coverUrl;
 
     // Don't show hero if no cover
@@ -217,9 +279,33 @@ class _HeroSection extends StatelessWidget {
                     Expanded(
                       flex: 7,
                       child: _buildLibraryButton(
-                        context.l10n.addToLibrary,
-                        () {
-                          // TODO(shana1499): Add to library action.
+                        isInLibrary
+                            ? context.l10n.removeFromLibrary
+                            : context.l10n.addToLibrary,
+                        isInLibrary: isInLibrary,
+                        onTap: () async {
+                          final bool nowInLibrary = await ref
+                              .read(userLibraryProvider.notifier)
+                              .toggle(heroManga);
+                          if (!context.mounted) {
+                            return;
+                          }
+
+                          if (nowInLibrary) {
+                            AppFeedback.showSuccess(
+                              context,
+                              title: context.l10n.libraryItemAdded(
+                                heroManga.title,
+                              ),
+                            );
+                          } else {
+                            AppFeedback.showInfo(
+                              context,
+                              title: context.l10n.libraryItemRemoved(
+                                heroManga.title,
+                              ),
+                            );
+                          }
                         },
                       ),
                     ),
@@ -318,7 +404,11 @@ class _HeroSection extends StatelessWidget {
     );
   }
 
-  Widget _buildLibraryButton(String text, VoidCallback onTap) {
+  Widget _buildLibraryButton(
+    String text, {
+    required bool isInLibrary,
+    required VoidCallback onTap,
+  }) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -335,7 +425,11 @@ class _HeroSection extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.add, color: AppColors.onSurface, size: 18),
+            Icon(
+              isInLibrary ? Icons.check : Icons.add,
+              color: AppColors.onSurface,
+              size: 18,
+            ),
             const SizedBox(width: 8),
             Flexible(
               child: Text(
@@ -432,9 +526,7 @@ class _TrendingMangaCard extends StatelessWidget {
       child: Container(
         width: 160,
         height: 220,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
-        ),
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(16)),
         child: Stack(
           children: [
             // Cover image
@@ -447,18 +539,12 @@ class _TrendingMangaCard extends StatelessWidget {
                         fit: BoxFit.cover,
                         errorBuilder: (_, __, ___) => const ColoredBox(
                           color: AppColors.card,
-                          child: Icon(
-                            Icons.image,
-                            color: AppColors.outline,
-                          ),
+                          child: Icon(Icons.image, color: AppColors.outline),
                         ),
                       )
                     : const ColoredBox(
                         color: AppColors.card,
-                        child: Icon(
-                          Icons.image,
-                          color: AppColors.outline,
-                        ),
+                        child: Icon(Icons.image, color: AppColors.outline),
                       ),
               ),
             ),
@@ -483,10 +569,7 @@ class _TrendingMangaCard extends StatelessWidget {
               top: 8,
               right: 8,
               child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 8,
-                  vertical: 4,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
                   color: AppColors.cardHigh,
                   borderRadius: BorderRadius.circular(8),
@@ -594,9 +677,9 @@ class _GenreTabsSectionState extends ConsumerState<_GenreTabsSection> {
                     // 0=All (no filter), 1=Popular (order=popular), 2=Romance, 3=Action
                     if (index == 1) {
                       // Popular - use LibraryMode.popular
-                      ref.read(libraryProvider.notifier).loadInitial(
-                        mode: LibraryMode.popular,
-                      );
+                      ref
+                          .read(libraryProvider.notifier)
+                          .loadInitial(mode: LibraryMode.popular);
                     } else {
                       // All, Romance, Action - use genre filter
                       const genres = [null, 'romance', 'action'];
@@ -685,7 +768,10 @@ class _NewChaptersSection extends ConsumerWidget {
           data: (chapters) {
             if (chapters.isEmpty) {
               return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 8,
+                ),
                 child: Text(
                   context.l10n.homeNoMangas,
                   style: AppTypography.bodyStyle.copyWith(

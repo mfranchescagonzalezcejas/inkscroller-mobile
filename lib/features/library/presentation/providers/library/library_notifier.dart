@@ -11,14 +11,17 @@ import 'library_state.dart';
 /// Browsing mode that determines the sort order used by [LibraryNotifier].
 enum LibraryMode { normal, popular }
 
+/// Cache key for genre tabs - combines mode and genre for unique identification.
+String _cacheKey(LibraryMode mode, String? genre) => '${mode.name}:$genre';
+
 /// Manages paginated manga list state with search, debounce, and deduplication.
 ///
 /// Calls [GetMangaList] and [SearchManga] use cases and emits immutable
 /// [LibraryState] snapshots consumed by [LibraryPage].
 class LibraryNotifier extends StateNotifier<LibraryState> {
   LibraryNotifier(this._getMangaList, this._searchManga)
-    : _mode = LibraryMode.normal,
-      super(LibraryState.initial()) {
+      : _mode = LibraryMode.normal,
+        super(LibraryState.initial()) {
     loadInitial();
   }
 
@@ -34,6 +37,9 @@ class LibraryNotifier extends StateNotifier<LibraryState> {
   Timer? _searchDebounce;
   String _activeQuery = '';
 
+  /// Cache for genre tabs - provides instant tab switching.
+  final Map<String, LibraryState> _tabCache = {};
+
   @override
   void dispose() {
     _searchDebounce?.cancel();
@@ -41,6 +47,17 @@ class LibraryNotifier extends StateNotifier<LibraryState> {
   }
 
   Future<void> loadInitial({LibraryMode mode = LibraryMode.normal, String? genre}) async {
+    final key = _cacheKey(mode, genre);
+
+    // Return cached result immediately if available.
+    if (_tabCache.containsKey(key)) {
+      final cached = _tabCache[key]!;
+      state = cached;
+      _mode = mode;
+      _genre = genre;
+      return;
+    }
+
     state = state.copyWith(isLoading: true, clearFailure: true);
 
     _mode = mode;
@@ -56,22 +73,26 @@ class LibraryNotifier extends StateNotifier<LibraryState> {
 
     result.fold(
       (failure) {
-        state = state.copyWith(
+        final failedState = state.copyWith(
           isLoading: false,
           mangas: const [],
           hasMore: false,
           failure: failure,
         );
+        state = failedState;
+        _tabCache[key] = failedState;
       },
       (mangas) {
         _offset += mangas.length;
 
-        state = state.copyWith(
+        final newState = state.copyWith(
           mangas: dedupeMangas(mangas),
           isLoading: false,
           hasMore: _mode == LibraryMode.normal && mangas.length == _limit,
           clearFailure: true,
         );
+        state = newState;
+        _tabCache[key] = newState;
       },
     );
   }

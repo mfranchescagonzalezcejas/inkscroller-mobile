@@ -2,7 +2,7 @@
   <configuration default="false" name="Flutter Dev Physical (Cloud Run)" type="FlutterRunConfigurationType" factoryName="Flutter">
     <option name="filePath" value="$PROJECT_DIR$/lib/main_dev.dart" />
     <option name="buildFlavor" value="dev" />
-    <option name="additionalArgs" value="--dart-define=API_BASE_URL=https://inkscroller-backend-708894048002.us-central1.run.app" />
+    <option name="additionalArgs" value="--dart-define=API_BASE_URL=https://inkscroller-backend-708894048002.us-central1.run.app --dart-define-from-file=$PROJECT_DIR$/.dart-defines/firebase.json" />
     <method v="2" />
   </configuration>
 </component>

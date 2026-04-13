@@ -156,7 +156,7 @@
                       "id": "kXV5B",
                       "name": "heroRating",
                       "fill": "$color-primary",
-                      "content": "★ 9.8",
+                      "content": "\u2605 9.8",
                       "fontFamily": "Plus Jakarta Sans",
                       "fontSize": 13,
                       "fontWeight": "normal"
@@ -178,7 +178,7 @@
                       "id": "yvxMZ",
                       "name": "heroMeta",
                       "fill": "$color-on-surface-variant",
-                      "content": "Manga · Seinen",
+                      "content": "Manga \u00b7 Seinen",
                       "fontFamily": "Plus Jakarta Sans",
                       "fontSize": 13,
                       "fontWeight": "normal"
@@ -491,7 +491,7 @@
                               "fill": "$color-on-surface-variant",
                               "textGrowth": "fixed-width",
                               "width": "fill_container",
-                              "content": "Sci-Fi · Shonen",
+                              "content": "Sci-Fi \u00b7 Shonen",
                               "fontFamily": "Plus Jakarta Sans",
                               "fontSize": 10,
                               "fontWeight": "normal"
@@ -519,7 +519,7 @@
                               "id": "n9dhk",
                               "name": "ratingText",
                               "fill": "$color-primary",
-                              "content": "★ 4.9",
+                              "content": "\u2605 4.9",
                               "fontFamily": "Plus Jakarta Sans",
                               "fontSize": 11,
                               "fontWeight": "normal"
@@ -604,7 +604,7 @@
                               "fill": "$color-on-surface-variant",
                               "textGrowth": "fixed-width",
                               "width": "fill_container",
-                              "content": "Horror · Mystery",
+                              "content": "Horror \u00b7 Mystery",
                               "fontFamily": "Plus Jakarta Sans",
                               "fontSize": 10,
                               "fontWeight": "normal"
@@ -700,7 +700,7 @@
                               "id": "qCzad",
                               "name": "chap1meta",
                               "fill": "$color-on-surface-variant",
-                              "content": "CHAPTER 154 · 2h ago",
+                              "content": "CHAPTER 154 \u00b7 2h ago",
                               "fontFamily": "Plus Jakarta Sans",
                               "fontSize": 11,
                               "fontWeight": "normal"
@@ -780,7 +780,7 @@
                               "id": "UrdaE",
                               "name": "chap2meta",
                               "fill": "$color-on-surface-variant",
-                              "content": "CHAPTER 89 · 5h ago",
+                              "content": "CHAPTER 89 \u00b7 5h ago",
                               "fontFamily": "Plus Jakarta Sans",
                               "fontSize": 11,
                               "fontWeight": "normal"
@@ -1899,7 +1899,7 @@
                 "type": "unsplash",
                 "username": "r0m0_4",
                 "link": "https://unsplash.com/@r0m0_4",
-                "author": "Рома Морозов"
+                "author": "\u0420\u043e\u043c\u0430 \u041c\u043e\u0440\u043e\u0437\u043e\u0432"
               },
               "width": 140,
               "height": 195,
@@ -2051,7 +2051,7 @@
               "id": "QbW4Q",
               "name": "mangaMeta",
               "fill": "$color-on-surface-variant",
-              "content": "★ 4.9  ·  142 chapters  ·  820k readers",
+              "content": "\u2605 4.9  \u00b7  142 chapters  \u00b7  820k readers",
               "textAlign": "center",
               "fontFamily": "Plus Jakarta Sans",
               "fontSize": 13,
@@ -2744,7 +2744,7 @@
                       "id": "qqIeD",
                       "name": "langValueText",
                       "fill": "$color-primary",
-                      "content": "Español",
+                      "content": "Espa\u00f1ol",
                       "fontFamily": "Plus Jakarta Sans",
                       "fontSize": 12,
                       "fontWeight": "normal"
@@ -2852,7 +2852,7 @@
                       "id": "nW034",
                       "name": "cacheTitleText",
                       "fill": "$color-on-surface",
-                      "content": "Caché y datos guardados",
+                      "content": "Cach\u00e9 y datos guardados",
                       "fontFamily": "Plus Jakarta Sans",
                       "fontSize": 14,
                       "fontWeight": "normal"
@@ -2930,7 +2930,7 @@
                       "id": "uNa9c",
                       "name": "infoTitleText",
                       "fill": "$color-on-surface",
-                      "content": "Información de la app",
+                      "content": "Informaci\u00f3n de la app",
                       "fontFamily": "Plus Jakarta Sans",
                       "fontSize": 14,
                       "fontWeight": "normal"
@@ -2940,7 +2940,7 @@
                       "id": "b3v9S",
                       "name": "infoSubText",
                       "fill": "$color-on-surface-variant",
-                      "content": "Versión, flavor, API",
+                      "content": "Versi\u00f3n, flavor, API",
                       "fontFamily": "Plus Jakarta Sans",
                       "fontSize": 12,
                       "fontWeight": "normal"
@@ -2994,7 +2994,7 @@
                   "id": "mtENt",
                   "name": "signOutLabel",
                   "fill": "#FF6B6B",
-                  "content": "Cerrar sesión",
+                  "content": "Cerrar sesi\u00f3n",
                   "fontFamily": "Plus Jakarta Sans",
                   "fontSize": 15,
                   "fontWeight": "600"
@@ -3006,7 +3006,7 @@
               "id": "fFaVX",
               "name": "versionText",
               "fill": "$color-outline",
-              "content": "Versión 2.4.0 (Build 892)",
+              "content": "Versi\u00f3n 2.4.0 (Build 892)",
               "textAlign": "center",
               "fontFamily": "Plus Jakarta Sans",
               "fontSize": 11,
@@ -4001,6 +4001,807 @@
                   "fontFamily": "Plus Jakarta Sans",
                   "fontSize": 10,
                   "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "T37Bd",
+      "x": 2820,
+      "y": 0,
+      "name": "TASK-037 Feedback Patterns",
+      "width": 1260,
+      "height": 980,
+      "fill": "$color-void",
+      "layout": "vertical",
+      "gap": 24,
+      "padding": [
+        24,
+        24,
+        24,
+        24
+      ],
+      "children": [
+        {
+          "type": "frame",
+          "id": "T37Hd",
+          "name": "Feedback Patterns Header",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 8,
+          "children": [
+            {
+              "type": "text",
+              "id": "T37Ht",
+              "name": "feedbackBoardTitle",
+              "fill": "$color-on-surface",
+              "content": "TASK-037 \u00b7 Feedback Patterns",
+              "fontFamily": "Plus Jakarta Sans",
+              "fontSize": 24,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "T37Hs",
+              "name": "feedbackBoardSubtitle",
+              "fill": "$color-on-surface-variant",
+              "content": "Dialogs, snackbars, and result popups aligned to the cinematic canvas system.",
+              "fontFamily": "Plus Jakarta Sans",
+              "fontSize": 14,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "T37R1",
+          "name": "Feedback Patterns Row 1",
+          "width": "fill_container",
+          "gap": 24,
+          "children": [
+            {
+              "type": "frame",
+              "id": "T37C1",
+              "name": "Clear Cache Confirm Dialog",
+              "width": 390,
+              "height": 400,
+              "fill": "$color-stage",
+              "cornerRadius": 28,
+              "padding": [
+                24,
+                24,
+                24,
+                24
+              ],
+              "layout": "vertical",
+              "gap": 20,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "T37C2",
+                  "name": "Clear Cache Confirm Scrim",
+                  "width": "fill_container",
+                  "height": "fill_container",
+                  "fill": "#080F10CC",
+                  "cornerRadius": 24,
+                  "layout": "vertical",
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "T37C3",
+                      "name": "Clear Cache Confirm Card",
+                      "width": 318,
+                      "fill": "$color-card",
+                      "cornerRadius": 20,
+                      "layout": "vertical",
+                      "gap": 16,
+                      "padding": [
+                        20,
+                        20,
+                        20,
+                        20
+                      ],
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "T37C4",
+                          "name": "Clear Cache Confirm Icon Chip",
+                          "width": 48,
+                          "height": 48,
+                          "fill": "$color-card-highest",
+                          "cornerRadius": 14,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon_font",
+                              "id": "T37C5",
+                              "name": "clearCacheConfirmIcon",
+                              "width": 24,
+                              "height": 24,
+                              "iconFontName": "delete_sweep",
+                              "iconFontFamily": "Material Symbols Outlined",
+                              "fill": "#F6C768"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "T37C6",
+                          "name": "Clear Cache Confirm Copy",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 8,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "T37C7",
+                              "name": "clearCacheConfirmTitle",
+                              "fill": "$color-on-surface",
+                              "content": "Clear cached chapters?",
+                              "fontFamily": "Plus Jakarta Sans",
+                              "fontSize": 20,
+                              "fontWeight": "700"
+                            },
+                            {
+                              "type": "text",
+                              "id": "T37C8",
+                              "name": "clearCacheConfirmBody",
+                              "fill": "$color-on-surface-variant",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Downloaded pages and temporary files will be removed from this device. Your library and reading progress stay intact.",
+                              "fontFamily": "Plus Jakarta Sans",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "T37C9",
+                          "name": "Clear Cache Confirm Meta",
+                          "width": "fill_container",
+                          "fill": "$color-card-high",
+                          "cornerRadius": 14,
+                          "padding": [
+                            12,
+                            14,
+                            12,
+                            14
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "T37CA",
+                              "name": "clearCacheConfirmMetaText",
+                              "fill": "$color-on-surface-variant",
+                              "content": "Estimated cleanup: 1.4 GB across 12 chapters",
+                              "fontFamily": "Plus Jakarta Sans",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "T37CB",
+                          "name": "Clear Cache Confirm Actions",
+                          "width": "fill_container",
+                          "gap": 12,
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "T37CC",
+                              "name": "Clear Cache Cancel Button",
+                              "width": "fill_container",
+                              "fill": "$color-card-high",
+                              "cornerRadius": 14,
+                              "padding": [
+                                12,
+                                16,
+                                12,
+                                16
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "T37CD",
+                                  "name": "clearCacheCancelLabel",
+                                  "fill": "$color-on-surface",
+                                  "content": "Keep files",
+                                  "fontFamily": "Plus Jakarta Sans",
+                                  "fontSize": 14,
+                                  "fontWeight": "600"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "T37CE",
+                              "name": "Clear Cache Confirm Button",
+                              "width": "fill_container",
+                              "fill": "#F6C768",
+                              "cornerRadius": 14,
+                              "padding": [
+                                12,
+                                16,
+                                12,
+                                16
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "T37CF",
+                                  "name": "clearCacheConfirmLabel",
+                                  "fill": "$color-void",
+                                  "content": "Clear cache",
+                                  "fontFamily": "Plus Jakarta Sans",
+                                  "fontSize": 14,
+                                  "fontWeight": "700"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "T37D1",
+              "name": "Clear Cache Result Popup",
+              "width": 390,
+              "height": 400,
+              "fill": "$color-stage",
+              "cornerRadius": 28,
+              "padding": [
+                24,
+                24,
+                24,
+                24
+              ],
+              "layout": "vertical",
+              "gap": 20,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "T37D2",
+                  "name": "Clear Cache Result Scrim",
+                  "width": "fill_container",
+                  "height": "fill_container",
+                  "fill": "#080F10B8",
+                  "cornerRadius": 24,
+                  "layout": "vertical",
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "T37D3",
+                      "name": "Clear Cache Result Card",
+                      "width": 302,
+                      "fill": "$color-card-high",
+                      "cornerRadius": 20,
+                      "layout": "vertical",
+                      "gap": 14,
+                      "padding": [
+                        20,
+                        20,
+                        20,
+                        20
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "T37D4",
+                          "name": "Clear Cache Result Icon Halo",
+                          "width": 64,
+                          "height": 64,
+                          "fill": "#4DDCC626",
+                          "cornerRadius": 20,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon_font",
+                              "id": "T37D5",
+                              "name": "clearCacheResultIcon",
+                              "width": 28,
+                              "height": 28,
+                              "iconFontName": "check_circle",
+                              "iconFontFamily": "Material Symbols Outlined",
+                              "fill": "$color-primary"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "T37D6",
+                          "name": "clearCacheResultTitle",
+                          "fill": "$color-on-surface",
+                          "content": "Cache cleared",
+                          "fontFamily": "Plus Jakarta Sans",
+                          "fontSize": 18,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "text",
+                          "id": "T37D7",
+                          "name": "clearCacheResultBody",
+                          "fill": "$color-on-surface-variant",
+                          "textGrowth": "fixed-width",
+                          "textAlign": "center",
+                          "width": "fill_container",
+                          "content": "1.4 GB removed. New chapters will stream fresh pages the next time you open them.",
+                          "fontFamily": "Plus Jakarta Sans",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "T37D8",
+                          "name": "Clear Cache Result Accent Bar",
+                          "width": 72,
+                          "height": 4,
+                          "fill": "$color-primary",
+                          "cornerRadius": 999
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "T37M1",
+              "name": "Mark Chapter Read Feedback",
+              "width": 390,
+              "height": 400,
+              "fill": "$color-stage",
+              "cornerRadius": 28,
+              "padding": [
+                24,
+                24,
+                24,
+                24
+              ],
+              "layout": "vertical",
+              "justifyContent": "end",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "T37M2",
+                  "name": "Mark Chapter Read Snackbar",
+                  "width": "fill_container",
+                  "height": 88,
+                  "fill": "#111416D9",
+                  "cornerRadius": 22,
+                  "effect": {
+                    "type": "background_blur",
+                    "radius": 20
+                  },
+                  "padding": [
+                    14,
+                    16,
+                    14,
+                    16
+                  ],
+                  "gap": 14,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "T37M3",
+                      "name": "Mark Chapter Read Icon Chip",
+                      "width": 44,
+                      "height": 44,
+                      "fill": "#4DDCC61F",
+                      "cornerRadius": 14,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon_font",
+                          "id": "T37M4",
+                          "name": "markChapterReadIcon",
+                          "width": 22,
+                          "height": 22,
+                          "iconFontName": "task_alt",
+                          "iconFontFamily": "Material Symbols Outlined",
+                          "fill": "$color-primary"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "T37M5",
+                      "name": "Mark Chapter Read Copy",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 4,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "T37M6",
+                          "name": "markChapterReadTitle",
+                          "fill": "$color-on-surface",
+                          "content": "Chapter marked as read",
+                          "fontFamily": "Plus Jakarta Sans",
+                          "fontSize": 14,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "T37M7",
+                          "name": "markChapterReadBody",
+                          "fill": "$color-on-surface-variant",
+                          "content": "Shadow of the Infinite \u00b7 Chapter 128",
+                          "fontFamily": "Plus Jakarta Sans",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "T37R2",
+          "name": "Feedback Patterns Row 2",
+          "width": "fill_container",
+          "gap": 24,
+          "children": [
+            {
+              "type": "frame",
+              "id": "T37B1",
+              "name": "Bulk Mark Read Confirm Dialog",
+              "width": 390,
+              "height": 400,
+              "fill": "$color-stage",
+              "cornerRadius": 28,
+              "padding": [
+                24,
+                24,
+                24,
+                24
+              ],
+              "layout": "vertical",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "T37B2",
+                  "name": "Bulk Mark Read Confirm Scrim",
+                  "width": "fill_container",
+                  "height": "fill_container",
+                  "fill": "#080F10CC",
+                  "cornerRadius": 24,
+                  "layout": "vertical",
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "T37B3",
+                      "name": "Bulk Mark Read Confirm Card",
+                      "width": 322,
+                      "fill": "$color-card",
+                      "cornerRadius": 20,
+                      "layout": "vertical",
+                      "gap": 16,
+                      "padding": [
+                        20,
+                        20,
+                        20,
+                        20
+                      ],
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "T37B4",
+                          "name": "Bulk Mark Read Confirm Header",
+                          "width": "fill_container",
+                          "gap": 12,
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "T37B5",
+                              "name": "Bulk Mark Read Confirm Icon Chip",
+                              "width": 48,
+                              "height": 48,
+                              "fill": "$color-card-highest",
+                              "cornerRadius": 14,
+                              "justifyContent": "center",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "icon_font",
+                                  "id": "T37B6",
+                                  "name": "bulkMarkReadConfirmIcon",
+                                  "width": 24,
+                                  "height": 24,
+                                  "iconFontName": "done_all",
+                                  "iconFontFamily": "Material Symbols Outlined",
+                                  "fill": "$color-primary"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "T37B7",
+                              "name": "Bulk Mark Read Confirm Copy",
+                              "width": "fill_container",
+                              "layout": "vertical",
+                              "gap": 6,
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "T37B8",
+                                  "name": "bulkMarkReadConfirmTitle",
+                                  "fill": "$color-on-surface",
+                                  "content": "Mark 24 chapters as read?",
+                                  "fontFamily": "Plus Jakarta Sans",
+                                  "fontSize": 19,
+                                  "fontWeight": "700"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "T37B9",
+                                  "name": "bulkMarkReadConfirmBody",
+                                  "fill": "$color-on-surface-variant",
+                                  "textGrowth": "fixed-width",
+                                  "width": "fill_container",
+                                  "content": "This updates progress across the selected volume instantly. Use undo if you only meant to update a few chapters.",
+                                  "fontFamily": "Plus Jakarta Sans",
+                                  "fontSize": 14,
+                                  "fontWeight": "normal"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "T37BA",
+                          "name": "Bulk Mark Read Confirm Summary",
+                          "width": "fill_container",
+                          "fill": "$color-card-high",
+                          "cornerRadius": 14,
+                          "layout": "vertical",
+                          "gap": 6,
+                          "padding": [
+                            12,
+                            14,
+                            12,
+                            14
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "T37BB",
+                              "name": "bulkMarkReadSummaryTitle",
+                              "fill": "$color-on-surface",
+                              "content": "Selection summary",
+                              "fontFamily": "Plus Jakarta Sans",
+                              "fontSize": 12,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "text",
+                              "id": "T37BC",
+                              "name": "bulkMarkReadSummaryBody",
+                              "fill": "$color-on-surface-variant",
+                              "content": "Volumes 12-14 \u00b7 Last selected: Chapter 128",
+                              "fontFamily": "Plus Jakarta Sans",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "T37BD",
+                          "name": "Bulk Mark Read Confirm Actions",
+                          "width": "fill_container",
+                          "gap": 12,
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "T37BE",
+                              "name": "Bulk Mark Read Secondary Button",
+                              "width": "fill_container",
+                              "fill": "$color-card-high",
+                              "cornerRadius": 14,
+                              "padding": [
+                                12,
+                                16,
+                                12,
+                                16
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "T37BF",
+                                  "name": "bulkMarkReadSecondaryLabel",
+                                  "fill": "$color-on-surface",
+                                  "content": "Review selection",
+                                  "fontFamily": "Plus Jakarta Sans",
+                                  "fontSize": 14,
+                                  "fontWeight": "600"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "T37BG",
+                              "name": "Bulk Mark Read Primary Button",
+                              "width": "fill_container",
+                              "fill": "$color-primary",
+                              "cornerRadius": 14,
+                              "padding": [
+                                12,
+                                16,
+                                12,
+                                16
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "T37BH",
+                                  "name": "bulkMarkReadPrimaryLabel",
+                                  "fill": "$color-void",
+                                  "content": "Mark all read",
+                                  "fontFamily": "Plus Jakarta Sans",
+                                  "fontSize": 14,
+                                  "fontWeight": "700"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "T37U1",
+              "name": "Bulk Mark Read Undo Snackbar",
+              "width": 390,
+              "height": 400,
+              "fill": "$color-stage",
+              "cornerRadius": 28,
+              "padding": [
+                24,
+                24,
+                24,
+                24
+              ],
+              "layout": "vertical",
+              "justifyContent": "end",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "T37U2",
+                  "name": "Bulk Mark Read Undo Surface",
+                  "width": "fill_container",
+                  "height": 96,
+                  "fill": "#111416E6",
+                  "cornerRadius": 24,
+                  "effect": {
+                    "type": "background_blur",
+                    "radius": 20
+                  },
+                  "padding": [
+                    14,
+                    16,
+                    14,
+                    16
+                  ],
+                  "gap": 14,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "T37U3",
+                      "name": "Bulk Mark Read Undo Icon Chip",
+                      "width": 44,
+                      "height": 44,
+                      "fill": "#4DDCC61F",
+                      "cornerRadius": 14,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon_font",
+                          "id": "T37U4",
+                          "name": "bulkMarkReadUndoIcon",
+                          "width": 22,
+                          "height": 22,
+                          "iconFontName": "done_all",
+                          "iconFontFamily": "Material Symbols Outlined",
+                          "fill": "$color-primary"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "T37U5",
+                      "name": "Bulk Mark Read Undo Copy",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 4,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "T37U6",
+                          "name": "bulkMarkReadUndoTitle",
+                          "fill": "$color-on-surface",
+                          "content": "24 chapters marked as read",
+                          "fontFamily": "Plus Jakarta Sans",
+                          "fontSize": 14,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "T37U7",
+                          "name": "bulkMarkReadUndoBody",
+                          "fill": "$color-on-surface-variant",
+                          "content": "Shadow of the Infinite \u00b7 Progress updated now",
+                          "fontFamily": "Plus Jakarta Sans",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "T37U8",
+                      "name": "Bulk Mark Read Undo Button",
+                      "fill": "$color-card-highest",
+                      "cornerRadius": 14,
+                      "padding": [
+                        10,
+                        14,
+                        10,
+                        14
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "T37U9",
+                          "name": "bulkMarkReadUndoLabel",
+                          "fill": "$color-primary",
+                          "content": "Undo",
+                          "fontFamily": "Plus Jakarta Sans",
+                          "fontSize": 13,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    }
+                  ]
                 }
               ]
             }

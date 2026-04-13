@@ -43,6 +43,10 @@ class Manga {
   /// List of authors/artist names.
   final List<String> authors;
 
+  /// Per-user reading progress counters when provided by the backend.
+  final int? readChaptersCount;
+  final int? totalChaptersCount;
+
   Manga({
     required this.id,
     required this.title,
@@ -56,6 +60,8 @@ class Manga {
     this.type,
     this.year,
     this.authors = const [],
+    this.readChaptersCount,
+    this.totalChaptersCount,
   });
 
   /// Returns display name for the demographic.

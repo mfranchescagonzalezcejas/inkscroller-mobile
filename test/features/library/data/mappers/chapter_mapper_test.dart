@@ -36,4 +36,17 @@ void main() {
     expect(entity.number, isNull);
     expect(entity.externalUrl, 'https://external');
   });
+
+  test('ChapterModelMapper.toEntity keeps invalid decimals nullable', () {
+    final model = ChapterModel(
+      id: 'chapter-invalid',
+      number: 'special',
+      readable: false,
+      external: true,
+    );
+
+    final entity = model.toEntity();
+
+    expect(entity.number, isNull);
+  });
 }

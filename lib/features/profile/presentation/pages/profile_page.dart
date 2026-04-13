@@ -6,6 +6,7 @@ import '../../../../core/config/app_version_provider.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/design/design_tokens.dart'
     show AppColors, AppTypography;
+import '../../../../core/feedback/app_feedback.dart';
 import '../../../../core/l10n/l10n.dart';
 import '../../../../core/l10n/app_locale_provider.dart';
 import '../../../../core/widgets/app_top_bar.dart';
@@ -601,16 +602,12 @@ class _SignOutSection extends ConsumerWidget {
             onPressed: authState.isLoading
                 ? null
                 : () async {
-                    final messenger = ScaffoldMessenger.of(context);
                     await ref.read(authProvider.notifier).signOut();
                     if (!context.mounted) return;
-                    messenger
-                      ..hideCurrentSnackBar()
-                      ..showSnackBar(
-                        SnackBar(
-                          content: Text(context.l10n.profileSignOutSnackBar),
-                        ),
-                      );
+                    AppFeedback.showInfo(
+                      context,
+                      title: context.l10n.profileSignOutSnackBar,
+                    );
                   },
             child: authState.isLoading
                 ? const SizedBox(
